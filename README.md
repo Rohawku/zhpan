@@ -25,11 +25,19 @@ When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judg
 
 ![cross-anchor](leaderboard/v0.3/anchor_compare_heatmap.png)
 
+### Per-category self-preference lift (EXP-004)
+
+![per-category lift](leaderboard/v0.3/category_selfpref_lift.png)
+
 **Three core findings**:
 
 - 💥 **DeepSeek-chat-judge has robust self-preference** ([+0.45 lift on AlignBench](experiments/EXPERIMENTS.md), reproducing v0.2's finding on a different prompt set, validated by **both** independent anchors). Self-prefers DeepSeek-chat generator at **+0.31** while rating other generators **-0.07 to -0.25**.
 - 🤝 **Qwen-max-judge and GLM-4-plus-judge show no significant self-preference** in either v0.2 or v0.3 (Qwen actually rates own family slightly *below* others). The first quantitative evidence that **self-preference among Chinese frontier judges is heterogeneous**, not universal as English-judge literature suggests.
 - 📐 **Cross-anchor agreement is extremely high**: Kimi-anchor and ERNIE-anchor produce bias matrices with **Pearson ρ = +0.928 (p < 1e-4)**. Even more strikingly, the delta-per-row is *constant* (+0.09, +0.31, +0.21, +0.29), proving mathematically that anchor choice only shifts *generator-wise overall offset*, never the *per-pair pattern*. So **per-pair self-preference signal is anchor-independent**.
+
+**Fourth finding (EXP-004, per-category breakdown)**:
+
+- 🎭 **Overall self-preference lift hides strong task-type heterogeneity**. GLM-4-plus-judge's overall lift is **+0.01** (looks like no self-preference), but split by AlignBench category: it favours its own family by **+0.72 on Basic-Task** and **+0.28 on Math**, while *reverse*-preferring (-0.40, -0.33) on Chinese-NLU and Roleplay. Averaging across categories cancels these out. DeepSeek-judge's self-preference is consistent (+0.14 to +0.68 across categories), strongest on subjective tasks (Chinese-NLU, Roleplay) and weakest on objective ones (Math, Domain-Expert). This generates a testable hypothesis: **task subjectivity correlates with self-preference magnitude**.
 
 ### Methodological contribution
 
@@ -41,8 +49,11 @@ Full v0.3 results:
 - [`leaderboard/v0.3/results.json`](leaderboard/v0.3/results.json) — bias matrix + 5-fold CV
 - [`leaderboard/v0.3/calibrator.json`](leaderboard/v0.3/calibrator.json) — drop-in calibrator
 - [`leaderboard/v0.3/anchor_compare.json`](leaderboard/v0.3/anchor_compare.json) — Kimi vs ERNIE cross-validation
+- [`leaderboard/v0.3/category_bias.json`](leaderboard/v0.3/category_bias.json) — per-AlignBench-category breakdown (EXP-004)
 - [`leaderboard/v0.3/bias_heatmap.png`](leaderboard/v0.3/bias_heatmap.png) — primary heatmap
 - [`leaderboard/v0.3/anchor_compare_heatmap.png`](leaderboard/v0.3/anchor_compare_heatmap.png) — 3-panel cross-anchor
+- [`leaderboard/v0.3/category_bias_heatmap.png`](leaderboard/v0.3/category_bias_heatmap.png) — 8 mini-heatmaps by category
+- [`leaderboard/v0.3/category_selfpref_lift.png`](leaderboard/v0.3/category_selfpref_lift.png) — per-category self-pref bar chart
 
 ## Install
 

@@ -17,6 +17,42 @@
 
 ## Experiments
 
+### EXP-004 (2026-05-18) — Per-category bias breakdown (free, reuses EXP-003 data)
+
+- Layer: 分析 only — 复用 EXP-003 的 3000 judgments，按 AlignBench 原始 category 拆分
+- Hypothesis: Overall self-preference lift 掩盖了 task-type-dependent pattern
+- Change: 新 `per_category_bias.py` 把 judgments 按 AlignBench 8 个 category buckets 切分，每个 bucket 独算 bias matrix + per-judge self-pref lift；新 `plot_per_category.py` 画 8 个 mini-heatmap + bar chart
+- Batch: 0（纯离线分析，零 API 成本）
+- 代理指标 — **self-preference lift per (judge, AlignBench category)** (anchor=ERNIE):
+
+| category (n=18-19) | DeepSeek-judge | GLM-judge | Qwen-judge |
+|---|---|---|---|
+| **OVERALL (n=150)** | **+0.45** | **+0.01** | **+0.18** |
+| 数学计算 (Math) | +0.14 | +0.28 | +0.11 |
+| 逻辑推理 (Reasoning) | +0.48 | -0.09 | +0.46 |
+| 中文理解 (Chinese-NLU) | **+0.68** | -0.40 | +0.47 |
+| 文本写作 (Writing) | +0.51 | -0.26 | -0.05 |
+| 角色扮演 (Roleplay) | **+0.65** | -0.33 | +0.24 |
+| 综合问答 (Open-QA) | +0.49 | +0.07 | +0.25 |
+| 基本任务 (Basic-Task) | +0.47 | **+0.72** | -0.12 |
+| 专业能力 (Domain-Expert) | +0.16 | +0.11 | +0.14 |
+
+- Decision: **keep & publish**
+- 关键发现：
+  1. **Overall lift 显著低估了 category-level self-preference**。GLM-judge overall lift = +0.01（看似无 self-pref），但拆开看：Math +0.28、**Basic-Task +0.72**、其余 category 负 lift。**Self-pref 在 task 维度高度异质，被 overall 平均掉了**。这是 zhpan-v0.3 用 overall 算 self-pref 的盲区。
+  2. **DeepSeek-judge self-pref 几乎贯穿所有 category** (+0.14 ~ +0.68)，但在主观维度任务上最强（Chinese-NLU +0.68, Roleplay +0.65），在客观可验证任务上最弱（Math +0.14, Domain-Expert +0.16）。
+  3. **Qwen-judge 在 Reasoning / Chinese-NLU 上 self-pref 显著** (+0.46 / +0.47)，被 Writing -0.05 和 Basic-Task -0.13 拉低 overall。
+  4. **新 hypothesis（待验证）: 主观性 ↔ self-preference 强度正相关**。客观可验证（Math / Domain-Expert）→ 低 lift；主观维度（Roleplay / Writing / Chinese-NLU）→ 高 lift。Basic-Task 的高 GLM lift 是反例需要进一步看 — 可能是 judge 在某种结构化任务上对自家输出格式有偏好。
+  5. Math 这一类上 GLM 对所有 generator 几乎全 +0.6 ~ +1.0（GLM-judge 比 ERNIE-anchor 普遍更宽松 in 数学评分） — 不是 self-pref 而是 judge-level 整体偏松。
+- 文件:
+  - `leaderboard/v0.3/category_bias.json`（完整 8 category × bias matrix + lift）
+  - `leaderboard/v0.3/category_bias_heatmap.png`（8 mini-heatmap grid）
+  - `leaderboard/v0.3/category_selfpref_lift.png`（per-judge × per-category bar chart）
+- Next:
+  1. EXP-005: 验证 "主观性 ↔ self-pref 强度" hypothesis — 在每个 category 内进一步按 subcategory 拆
+  2. EXP-006: 看 self-pref 与生成长度 / 风格相似度的关联（控制变量）
+
+
 ### EXP-003 (2026-05-18) — v0.3 paper-grade: AlignBench + cross-anchor robustness
 
 - Layer: 全 pipeline + 方法学
