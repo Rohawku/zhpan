@@ -1,0 +1,33 @@
+{
+  "primary_anchor": "ernie-anchor-judge",
+  "secondary_anchor": "kimi-anchor-judge",
+  "per_judge": {
+    "deepseek-chat-judge": {
+      "pearson_r_primary": 0.817866474875784,
+      "pearson_p_primary": 0.013116482227458925,
+      "pearson_r_secondary": 0.42474817958303046,
+      "pearson_p_secondary": 0.29419944122814345,
+      "spearman_r_primary": 0.9285714285714287,
+      "spearman_r_secondary": 0.3333333333333334,
+      "direction_agrees": true
+    },
+    "glm-4-plus-judge": {
+      "pearson_r_primary": -0.7235913597070027,
+      "pearson_p_primary": 0.04245550003182965,
+      "pearson_r_secondary": -0.6205808316149374,
+      "pearson_p_secondary": 0.10064278806003575,
+      "spearman_r_primary": -0.8333333333333335,
+      "spearman_r_secondary": -0.6428571428571429,
+      "direction_agrees": true
+    },
+    "qwen-max-judge": {
+      "pearson_r_primary": 0.13911836428270336,
+      "pearson_p_primary": 0.7424991326551081,
+      "pearson_r_secondary": -0.17176535868345344,
+      "pearson_p_secondary": 0.6842184496170854,
+      "spearman_r_primary": 0.28571428571428575,
+      "spearman_r_secondary": -0.07142857142857144,
+      "direction_agrees": false
+    }
+  }
+}

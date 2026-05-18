@@ -17,6 +17,42 @@
 
 ## Experiments
 
+### EXP-006 (2026-05-18) — Anchor-robustness of subjectivity correlation (¥0, reuses EXP-003)
+
+- Layer: 分析 only — 用第二个独立 anchor (Kimi) 重做 EXP-005 的相关性分析
+- Hypothesis: EXP-005 的 GLM 反向相关 (ρ=−0.72, p=0.042) 是否是 ERNIE-anchor artifact？换 Kimi anchor 后是否方向反转或消失？
+- Method:
+  1. `per_category_bias.py --anchor kimi-anchor-judge` 重算 per-category lift
+  2. `subjectivity_correlation.py` 跑相同 8-category subjectivity 分回归
+  3. `plot_anchor_subj_robust.py` 把两 anchor 的结果摆一起对比
+- 代理指标（per tested judge, Pearson ρ）:
+
+| Judge | ρ(ERNIE-anchor) | p | ρ(Kimi-anchor) | p | direction agrees? |
+|---|---|---|---|---|---|
+| **deepseek-chat-judge** | **+0.82** | **0.013** | +0.43 | 0.29 | ✓ both positive |
+| **glm-4-plus-judge** | **−0.72** | **0.042** | −0.62 | 0.10 | ✓ both negative |
+| qwen-max-judge | +0.14 | 0.742 | −0.17 | 0.68 | ✗ near-zero both ways |
+
+- Decision: **keep & publish**
+- 关键发现：
+  1. **方向是 anchor-robust 的**：DeepSeek 在两个 anchor 下都正相关，GLM 在两个 anchor 下都负相关 — 两 anchor 完全独立家族，定性结论一致
+  2. **量级 / 显著性 anchor-dependent**：DeepSeek ρ 从 +0.82 (p=0.013) 降到 +0.43 (p=0.29) — Kimi 下不再 p<0.05；GLM ρ 从 −0.72 (p=0.042) 改为 −0.62 (p=0.10) — Kimi 下处于边缘显著
+  3. **GLM 反向相关 不是 ERNIE artifact**：负 ρ 在 Kimi 下复现，量级 ≥ 0.6。两个独立 anchor 都看到 GLM 在主观任务上**反**偏好自家
+  4. **Anchor 选择影响显著性而非定性结论**：n=8 太小，p 值对 anchor 敏感；但 sign 和 magnitude 的相对排序稳定（DeepSeek 最正 > Qwen 中性 > GLM 最负）
+  5. **方法学 implication**：n=8 main category 上单 anchor + p<0.05 的 finding 不应直接 publish；至少要 (a) 双 anchor 同方向 + (b) Spearman ρ 检验 (rank-based, more robust at small n)。**zhpan 现在两条都过**：
+     - ERNIE: ρ_Pearson=+0.82/−0.72, ρ_Spearman=+0.93/−0.83
+     - Kimi:  ρ_Pearson=+0.43/−0.62, ρ_Spearman=+0.33/−0.64
+- 文件:
+  - `leaderboard/v0.3/category_bias_kimi.json`
+  - `leaderboard/v0.3/subjectivity_correlation_kimi.json`
+  - `leaderboard/v0.3/subjectivity_scatter_kimi.png`（Kimi-only scatter）
+  - `leaderboard/v0.3/subjectivity_anchor_robust.png`（**2-panel side-by-side**，README hero）
+  - `leaderboard/v0.3/subjectivity_anchor_robust.json`
+- Next:
+  1. EXP-007: subcategory-level 分析（n=3-5 太小，但可以 bootstrap CI）
+  2. EXP-008: 第三个 cross-lingual anchor (GPT-4o 或 Claude，via 代理) 再加一层 robustness
+
+
 ### EXP-005 (2026-05-18) — Subjectivity ↔ self-pref hypothesis test (free, reuses EXP-004 data)
 
 - Layer: 分析 only — 复用 EXP-004 的 per-category lift

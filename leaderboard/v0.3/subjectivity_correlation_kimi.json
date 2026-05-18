@@ -1,0 +1,210 @@
+{
+  "anchor": "kimi-anchor-judge",
+  "subjectivity_scoring": {
+    "数学计算": {
+      "score": 1.0,
+      "label_en": "Math"
+    },
+    "专业能力": {
+      "score": 1.5,
+      "label_en": "Domain-Expert"
+    },
+    "基本任务": {
+      "score": 2.0,
+      "label_en": "Basic-Task"
+    },
+    "逻辑推理": {
+      "score": 2.5,
+      "label_en": "Reasoning"
+    },
+    "综合问答": {
+      "score": 3.0,
+      "label_en": "Open-QA"
+    },
+    "中文理解": {
+      "score": 3.5,
+      "label_en": "Chinese-NLU"
+    },
+    "文本写作": {
+      "score": 4.5,
+      "label_en": "Writing"
+    },
+    "角色扮演": {
+      "score": 5.0,
+      "label_en": "Roleplay"
+    }
+  },
+  "per_judge": {
+    "deepseek-chat-judge": {
+      "data": [
+        {
+          "category": "数学计算",
+          "category_en": "Math",
+          "subjectivity": 1.0,
+          "lift": 0.7017543859649122
+        },
+        {
+          "category": "专业能力",
+          "category_en": "Domain-Expert",
+          "subjectivity": 1.5,
+          "lift": 0.14035087719298245
+        },
+        {
+          "category": "基本任务",
+          "category_en": "Basic-Task",
+          "subjectivity": 2.0,
+          "lift": 0.5087719298245614
+        },
+        {
+          "category": "逻辑推理",
+          "category_en": "Reasoning",
+          "subjectivity": 2.5,
+          "lift": 0.8148148148148148
+        },
+        {
+          "category": "综合问答",
+          "category_en": "Open-QA",
+          "subjectivity": 3.0,
+          "lift": 0.43859649122807015
+        },
+        {
+          "category": "中文理解",
+          "category_en": "Chinese-NLU",
+          "subjectivity": 3.5,
+          "lift": 0.9473684210526315
+        },
+        {
+          "category": "文本写作",
+          "category_en": "Writing",
+          "subjectivity": 4.5,
+          "lift": 0.8070175438596492
+        },
+        {
+          "category": "角色扮演",
+          "category_en": "Roleplay",
+          "subjectivity": 5.0,
+          "lift": 0.6481481481481481
+        }
+      ],
+      "pearson_r": 0.42474817958303046,
+      "pearson_p": 0.29419944122814345,
+      "spearman_r": 0.3333333333333334,
+      "spearman_p": 0.41975308641975323,
+      "n": 8
+    },
+    "glm-4-plus-judge": {
+      "data": [
+        {
+          "category": "数学计算",
+          "category_en": "Math",
+          "subjectivity": 1.0,
+          "lift": 0.14035087719298248
+        },
+        {
+          "category": "专业能力",
+          "category_en": "Domain-Expert",
+          "subjectivity": 1.5,
+          "lift": 0.2982456140350877
+        },
+        {
+          "category": "基本任务",
+          "category_en": "Basic-Task",
+          "subjectivity": 2.0,
+          "lift": 0.7543859649122806
+        },
+        {
+          "category": "逻辑推理",
+          "category_en": "Reasoning",
+          "subjectivity": 2.5,
+          "lift": -0.1296296296296296
+        },
+        {
+          "category": "综合问答",
+          "category_en": "Open-QA",
+          "subjectivity": 3.0,
+          "lift": -0.05263157894736842
+        },
+        {
+          "category": "中文理解",
+          "category_en": "Chinese-NLU",
+          "subjectivity": 3.5,
+          "lift": -0.2807017543859649
+        },
+        {
+          "category": "文本写作",
+          "category_en": "Writing",
+          "subjectivity": 4.5,
+          "lift": -0.45614035087719296
+        },
+        {
+          "category": "角色扮演",
+          "category_en": "Roleplay",
+          "subjectivity": 5.0,
+          "lift": -0.03703703703703698
+        }
+      ],
+      "pearson_r": -0.6205808316149374,
+      "pearson_p": 0.10064278806003575,
+      "spearman_r": -0.6428571428571429,
+      "spearman_p": 0.08555889101267328,
+      "n": 8
+    },
+    "qwen-max-judge": {
+      "data": [
+        {
+          "category": "数学计算",
+          "category_en": "Math",
+          "subjectivity": 1.0,
+          "lift": 0.17543859649122812
+        },
+        {
+          "category": "专业能力",
+          "category_en": "Domain-Expert",
+          "subjectivity": 1.5,
+          "lift": 0.5438596491228069
+        },
+        {
+          "category": "基本任务",
+          "category_en": "Basic-Task",
+          "subjectivity": 2.0,
+          "lift": -0.22807017543859653
+        },
+        {
+          "category": "逻辑推理",
+          "category_en": "Reasoning",
+          "subjectivity": 2.5,
+          "lift": 0.05555555555555569
+        },
+        {
+          "category": "综合问答",
+          "category_en": "Open-QA",
+          "subjectivity": 3.0,
+          "lift": 0.1929824561403509
+        },
+        {
+          "category": "中文理解",
+          "category_en": "Chinese-NLU",
+          "subjectivity": 3.5,
+          "lift": -0.17543859649122817
+        },
+        {
+          "category": "文本写作",
+          "category_en": "Writing",
+          "subjectivity": 4.5,
+          "lift": 0.03508771929824556
+        },
+        {
+          "category": "角色扮演",
+          "category_en": "Roleplay",
+          "subjectivity": 5.0,
+          "lift": 0.24074074074074076
+        }
+      ],
+      "pearson_r": -0.17176535868345344,
+      "pearson_p": 0.6842184496170854,
+      "spearman_r": -0.07142857142857144,
+      "spearman_p": 0.8665262706759087,
+      "n": 8
+    }
+  }
+}

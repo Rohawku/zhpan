@@ -1,0 +1,834 @@
+{
+  "anchor": "kimi-anchor-judge",
+  "secondary_anchor": "ernie-anchor-judge",
+  "categories": {
+    "专业能力": {
+      "n_prompts": 19,
+      "n_judgments": 380,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.10526315789473684,
+            "doubao-pro-32k": 0.0,
+            "glm-4-plus": -0.05263157894736842,
+            "qwen-max": -0.05263157894736842
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.2631578947368421,
+            "doubao-pro-32k": 0.0,
+            "glm-4-plus": 0.47368421052631576,
+            "qwen-max": 0.2631578947368421
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.10526315789473684,
+            "doubao-pro-32k": -0.42105263157894735,
+            "glm-4-plus": -0.15789473684210525,
+            "qwen-max": 0.3157894736842105
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.7177990366834661,
+            "doubao-pro-32k": 0.7947194142390263,
+            "glm-4-plus": 2.416471638578736,
+            "qwen-max": 0.8869631340185642
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.7841928645132284,
+            "doubao-pro-32k": 0.7254762501100116,
+            "glm-4-plus": 1.4642555519203742,
+            "qwen-max": 0.713929471907923
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.717799036683466,
+            "doubao-pro-32k": 1.0420520985907016,
+            "glm-4-plus": 1.6940502041506402,
+            "qwen-max": 0.653140718210045
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": 0.9486832980505139,
+          "glm-4-plus-judge": 0.6000000000000001,
+          "qwen-max-judge": 0.19999999999999998
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.14035087719298245,
+          "glm-4-plus-judge": 0.2982456140350877,
+          "qwen-max-judge": 0.5438596491228069
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.14035087719298245,
+        "glm-4-plus-judge": 0.2982456140350877,
+        "qwen-max-judge": 0.5438596491228069
+      }
+    },
+    "中文理解": {
+      "n_prompts": 19,
+      "n_judgments": 380,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.47368421052631576,
+            "doubao-pro-32k": -0.15789473684210525,
+            "glm-4-plus": -0.47368421052631576,
+            "qwen-max": -0.7894736842105263
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.21052631578947367,
+            "doubao-pro-32k": 0.21052631578947367,
+            "glm-4-plus": -0.10526315789473684,
+            "qwen-max": 0.10526315789473684
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.631578947368421,
+            "doubao-pro-32k": -0.47368421052631576,
+            "glm-4-plus": -0.42105263157894735,
+            "qwen-max": -0.6842105263157895
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.8187552203212655,
+            "doubao-pro-32k": 1.8140724146962193,
+            "glm-4-plus": 1.7879250264697923,
+            "qwen-max": 2.627365047231302
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.7663273567663704,
+            "doubao-pro-32k": 0.6942582083301536,
+            "glm-4-plus": 1.4102906323130804,
+            "qwen-max": 0.6402907926629704
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 1.1337189067651587,
+            "doubao-pro-32k": 0.9930506454796424,
+            "glm-4-plus": 0.7480352843974681,
+            "qwen-max": 1.4161709523235484
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": 0.10540925533894598,
+          "glm-4-plus-judge": 0.8333333333333335,
+          "qwen-max-judge": -0.888888888888889
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.9473684210526315,
+          "glm-4-plus-judge": -0.2807017543859649,
+          "qwen-max-judge": -0.17543859649122817
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.9473684210526315,
+        "glm-4-plus-judge": -0.2807017543859649,
+        "qwen-max-judge": -0.17543859649122817
+      }
+    },
+    "基本任务": {
+      "n_prompts": 19,
+      "n_judgments": 380,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.6842105263157895,
+            "doubao-pro-32k": 0.2631578947368421,
+            "glm-4-plus": 0.42105263157894735,
+            "qwen-max": -0.15789473684210525
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": -0.15789473684210525,
+            "doubao-pro-32k": 0.0,
+            "glm-4-plus": 0.631578947368421,
+            "qwen-max": -0.21052631578947367
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.21052631578947367,
+            "doubao-pro-32k": -0.631578947368421,
+            "glm-4-plus": -0.21052631578947367,
+            "qwen-max": -0.5789473684210527
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 1.0786263964168,
+            "doubao-pro-32k": 0.7841928645132284,
+            "glm-4-plus": 1.2275688199674315,
+            "qwen-max": 1.7248389061235725
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 2.0329692542976807,
+            "doubao-pro-32k": 1.6222142113076254,
+            "glm-4-plus": 0.871207650381413,
+            "qwen-max": 1.7038330585514365
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 1.0552598766191275,
+            "doubao-pro-32k": 0.48237638894272,
+            "glm-4-plus": 0.8321783316232577,
+            "qwen-max": 0.8153649149910351
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": -0.39999999999999997,
+          "glm-4-plus-judge": -0.39999999999999997,
+          "qwen-max-judge": -0.316227766016838
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.5087719298245614,
+          "glm-4-plus-judge": 0.7543859649122806,
+          "qwen-max-judge": -0.22807017543859653
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.5087719298245614,
+        "glm-4-plus-judge": 0.7543859649122806,
+        "qwen-max-judge": -0.22807017543859653
+      }
+    },
+    "数学计算": {
+      "n_prompts": 19,
+      "n_judgments": 380,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.15789473684210525,
+            "doubao-pro-32k": -0.21052631578947367,
+            "glm-4-plus": -0.3157894736842105,
+            "qwen-max": -1.105263157894737
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.47368421052631576,
+            "doubao-pro-32k": 0.0,
+            "glm-4-plus": 0.10526315789473684,
+            "qwen-max": -0.5789473684210527
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.3684210526315789,
+            "doubao-pro-32k": -0.42105263157894735,
+            "glm-4-plus": -0.3684210526315789,
+            "qwen-max": -0.21052631578947367
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 1.1815760168759815,
+            "doubao-pro-32k": 0.8321783316232577,
+            "glm-4-plus": 0.9761703679469163,
+            "qwen-max": 2.403828894035629
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.9930506454796424,
+            "doubao-pro-32k": 1.5559732104309982,
+            "glm-4-plus": 1.0708942078618846,
+            "qwen-max": 2.324147596402065
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.871207650381413,
+            "doubao-pro-32k": 0.8153649149910351,
+            "glm-4-plus": 0.8085416576703798,
+            "qwen-max": 0.8931875130777442
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": -0.39999999999999997,
+          "glm-4-plus-judge": -0.39999999999999997,
+          "qwen-max-judge": 1.0
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.7017543859649122,
+          "glm-4-plus-judge": 0.14035087719298248,
+          "qwen-max-judge": 0.17543859649122812
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.7017543859649122,
+        "glm-4-plus-judge": 0.14035087719298248,
+        "qwen-max-judge": 0.17543859649122812
+      }
+    },
+    "文本写作": {
+      "n_prompts": 19,
+      "n_judgments": 380,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": -0.05263157894736842,
+            "doubao-pro-32k": -1.105263157894737,
+            "glm-4-plus": -0.7894736842105263,
+            "qwen-max": -0.6842105263157895
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.0,
+            "doubao-pro-32k": -0.10526315789473684,
+            "glm-4-plus": -0.47368421052631576,
+            "qwen-max": 0.05263157894736842
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.3684210526315789,
+            "doubao-pro-32k": -0.631578947368421,
+            "glm-4-plus": -0.5263157894736842,
+            "qwen-max": -0.47368421052631576
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 1.1458705819514337,
+            "doubao-pro-32k": 1.9165412058982234,
+            "glm-4-plus": 1.3602997877179037,
+            "qwen-max": 1.2999041089714178
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 1.025978352085154,
+            "doubao-pro-32k": 0.9676198058342228,
+            "glm-4-plus": 1.6660201885625698,
+            "qwen-max": 0.6046908048987398
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.6657426652986062,
+            "doubao-pro-32k": 0.9296590385608259,
+            "glm-4-plus": 0.6781104593013224,
+            "qwen-max": 0.8806947647727111
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": 0.316227766016838,
+          "glm-4-plus-judge": 0.10540925533894598,
+          "qwen-max-judge": 0.316227766016838
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.8070175438596492,
+          "glm-4-plus-judge": -0.45614035087719296,
+          "qwen-max-judge": 0.03508771929824556
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.8070175438596492,
+        "glm-4-plus-judge": -0.45614035087719296,
+        "qwen-max-judge": 0.03508771929824556
+      }
+    },
+    "综合问答": {
+      "n_prompts": 19,
+      "n_judgments": 380,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": -0.05263157894736842,
+            "doubao-pro-32k": -0.47368421052631576,
+            "glm-4-plus": -0.631578947368421,
+            "qwen-max": -0.3684210526315789
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": -0.05263157894736842,
+            "doubao-pro-32k": -0.21052631578947367,
+            "glm-4-plus": -0.2631578947368421,
+            "qwen-max": -0.3684210526315789
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.2631578947368421,
+            "doubao-pro-32k": -0.05263157894736842,
+            "glm-4-plus": -0.2631578947368421,
+            "qwen-max": 0.0
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.7590634264134715,
+            "doubao-pro-32k": 0.5954583420518295,
+            "glm-4-plus": 0.7405919620773835,
+            "qwen-max": 0.48237638894271995
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.6046908048987398,
+            "doubao-pro-32k": 0.5210260492953508,
+            "glm-4-plus": 0.44034738238635557,
+            "qwen-max": 1.3845206776806216
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.5469634129164876,
+            "doubao-pro-32k": 0.39385867229199384,
+            "glm-4-plus": 0.5469634129164876,
+            "qwen-max": 0.3244428422615251
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 19,
+            "doubao-pro-32k": 19,
+            "glm-4-plus": 19,
+            "qwen-max": 19
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": -0.39999999999999997,
+          "glm-4-plus-judge": -0.632455532033676,
+          "qwen-max-judge": 0.7999999999999999
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.43859649122807015,
+          "glm-4-plus-judge": -0.05263157894736842,
+          "qwen-max-judge": 0.1929824561403509
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.43859649122807015,
+        "glm-4-plus-judge": -0.05263157894736842,
+        "qwen-max-judge": 0.1929824561403509
+      }
+    },
+    "角色扮演": {
+      "n_prompts": 18,
+      "n_judgments": 360,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.3888888888888889,
+            "doubao-pro-32k": -0.7222222222222222,
+            "glm-4-plus": 0.3333333333333333,
+            "qwen-max": -0.3888888888888889
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": -0.6111111111111112,
+            "doubao-pro-32k": -0.8888888888888888,
+            "glm-4-plus": -0.7777777777777778,
+            "qwen-max": -0.7222222222222222
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.4444444444444444,
+            "doubao-pro-32k": -0.9444444444444444,
+            "glm-4-plus": -0.5,
+            "qwen-max": -0.3888888888888889
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 1.1124991330278213,
+            "doubao-pro-32k": 1.4065543223524626,
+            "glm-4-plus": 0.816496580927726,
+            "qwen-max": 1.603429965517979
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 2.406908780270497,
+            "doubao-pro-32k": 2.1573875376608442,
+            "glm-4-plus": 2.5067809272618837,
+            "qwen-max": 1.9665411133808732
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.8958064164776165,
+            "doubao-pro-32k": 0.911178859269818,
+            "glm-4-plus": 0.8333333333333334,
+            "qwen-max": 0.5905636562630361
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 18,
+            "doubao-pro-32k": 18,
+            "glm-4-plus": 18,
+            "qwen-max": 18
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 18,
+            "doubao-pro-32k": 18,
+            "glm-4-plus": 18,
+            "qwen-max": 18
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 18,
+            "doubao-pro-32k": 18,
+            "glm-4-plus": 18,
+            "qwen-max": 18
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": 0.10540925533894598,
+          "glm-4-plus-judge": 0.05555555555555556,
+          "qwen-max-judge": 0.0
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.6481481481481481,
+          "glm-4-plus-judge": -0.03703703703703698,
+          "qwen-max-judge": 0.24074074074074076
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.6481481481481481,
+        "glm-4-plus-judge": -0.03703703703703698,
+        "qwen-max-judge": 0.24074074074074076
+      }
+    },
+    "逻辑推理": {
+      "n_prompts": 18,
+      "n_judgments": 360,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.0,
+            "doubao-pro-32k": -0.7222222222222222,
+            "glm-4-plus": -0.9444444444444444,
+            "qwen-max": -0.7777777777777778
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.3333333333333333,
+            "doubao-pro-32k": -0.2222222222222222,
+            "glm-4-plus": -0.2222222222222222,
+            "qwen-max": -0.3888888888888889
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.5555555555555556,
+            "doubao-pro-32k": -0.6666666666666666,
+            "glm-4-plus": -0.9444444444444444,
+            "qwen-max": -0.6666666666666666
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.5773502691896257,
+            "doubao-pro-32k": 2.022252747022366,
+            "glm-4-plus": 2.634645711417639,
+            "qwen-max": 2.298684540619689
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.816496580927726,
+            "doubao-pro-32k": 1.547598697464902,
+            "glm-4-plus": 1.314684396244359,
+            "qwen-max": 1.6712898840545913
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.9558139185602919,
+            "doubao-pro-32k": 0.6666666666666666,
+            "glm-4-plus": 1.3111581912451051,
+            "qwen-max": 1.2909944487358056
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 18,
+            "doubao-pro-32k": 18,
+            "glm-4-plus": 18,
+            "qwen-max": 18
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 18,
+            "doubao-pro-32k": 18,
+            "glm-4-plus": 18,
+            "qwen-max": 18
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 18,
+            "doubao-pro-32k": 18,
+            "glm-4-plus": 18,
+            "qwen-max": 18
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": 0.316227766016838,
+          "glm-4-plus-judge": 0.05555555555555556,
+          "qwen-max-judge": 0.3333333333333334
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.8148148148148148,
+          "glm-4-plus-judge": -0.1296296296296296,
+          "qwen-max-judge": 0.05555555555555569
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.8148148148148148,
+        "glm-4-plus-judge": -0.1296296296296296,
+        "qwen-max-judge": 0.05555555555555569
+      }
+    },
+    "__overall__": {
+      "n_prompts": 150,
+      "n_judgments": 3000,
+      "bias_matrix": {
+        "judges": [
+          "deepseek-chat-judge",
+          "glm-4-plus-judge",
+          "qwen-max-judge"
+        ],
+        "generators": [
+          "deepseek-chat",
+          "doubao-pro-32k",
+          "glm-4-plus",
+          "qwen-max"
+        ],
+        "mean_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.21333333333333335,
+            "doubao-pro-32k": -0.38666666666666666,
+            "glm-4-plus": -0.30666666666666664,
+            "qwen-max": -0.54
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 0.06,
+            "doubao-pro-32k": -0.14666666666666667,
+            "glm-4-plus": -0.07333333333333333,
+            "qwen-max": -0.22666666666666666
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": -0.36666666666666664,
+            "doubao-pro-32k": -0.5266666666666666,
+            "glm-4-plus": -0.42,
+            "qwen-max": -0.3333333333333333
+          }
+        },
+        "std_bias": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 0.9837795597704916,
+            "doubao-pro-32k": 1.441234039132977,
+            "glm-4-plus": 1.7007710669641056,
+            "qwen-max": 1.8389489751848291
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 1.362497706420088,
+            "doubao-pro-32k": 1.363264056919601,
+            "glm-4-plus": 1.5148010503766567,
+            "qwen-max": 1.5368654968980064
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 0.890068661521246,
+            "doubao-pro-32k": 0.8461415694525093,
+            "glm-4-plus": 1.0215674231297707,
+            "qwen-max": 0.9775252199076788
+          }
+        },
+        "n": {
+          "deepseek-chat-judge": {
+            "deepseek-chat": 150,
+            "doubao-pro-32k": 150,
+            "glm-4-plus": 150,
+            "qwen-max": 150
+          },
+          "glm-4-plus-judge": {
+            "deepseek-chat": 150,
+            "doubao-pro-32k": 150,
+            "glm-4-plus": 150,
+            "qwen-max": 150
+          },
+          "qwen-max-judge": {
+            "deepseek-chat": 150,
+            "doubao-pro-32k": 150,
+            "glm-4-plus": 150,
+            "qwen-max": 150
+          }
+        },
+        "rank_corr": {
+          "deepseek-chat-judge": -0.39999999999999997,
+          "glm-4-plus-judge": -0.10540925533894598,
+          "qwen-max-judge": 0.7999999999999999
+        },
+        "self_pref_lift": {
+          "deepseek-chat-judge": 0.6244444444444445,
+          "glm-4-plus-judge": 0.031111111111111117,
+          "qwen-max-judge": 0.10444444444444445
+        }
+      },
+      "self_pref_lift": {
+        "deepseek-chat-judge": 0.6244444444444445,
+        "glm-4-plus-judge": 0.031111111111111117,
+        "qwen-max-judge": 0.10444444444444445
+      }
+    }
+  }
+}

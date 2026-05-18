@@ -33,6 +33,10 @@ When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judg
 
 ![subjectivity scatter](leaderboard/v0.3/subjectivity_scatter.png)
 
+### Anchor-robustness of the subjectivity pattern (EXP-006)
+
+![subjectivity anchor robust](leaderboard/v0.3/subjectivity_anchor_robust.png)
+
 **Three core findings**:
 
 - 💥 **DeepSeek-chat-judge has robust self-preference** ([+0.45 lift on AlignBench](experiments/EXPERIMENTS.md), reproducing v0.2's finding on a different prompt set, validated by **both** independent anchors). Self-prefers DeepSeek-chat generator at **+0.31** while rating other generators **-0.07 to -0.25**.
@@ -46,6 +50,10 @@ When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judg
 **Fifth finding (EXP-005, subjectivity hypothesis test)**:
 
 - 🧪 **The "subjectivity → self-preference" hypothesis is partly refuted**. We assigned a subjectivity score (1=Math, 5=Roleplay) to each AlignBench category and tested correlation with each judge's per-category lift. **DeepSeek-chat-judge has Pearson ρ = +0.82 (p=0.013), Spearman ρ = +0.93 (p=0.001) — strongly supporting the hypothesis**. But **GLM-4-plus-judge has Pearson ρ = −0.72 (p=0.042) — the opposite, significantly**. Qwen-max-judge shows no correlation. Conclusion: there is **no universal subjectivity-bias law** for LLM-as-Judge; the pattern is per-model and can be inverted. This is, to our knowledge, the first quantitative report of inverse subjectivity-correlation in a Chinese frontier judge.
+
+**Sixth finding (EXP-006, anchor-robustness of EXP-005)**:
+
+- 🔁 **The opposing directions are anchor-robust, p-values are not**. Repeating EXP-005 with the second independent anchor (Kimi-Moonshot) gives ρ(DeepSeek) = +0.43 and ρ(GLM) = −0.62. Significance weakens at n=8 (DeepSeek p=0.29, GLM p=0.10), but **direction agrees on both judges**: DeepSeek positive both times, GLM negative both times. So the qualitative claim — "DeepSeek's bias grows with subjectivity, GLM's shrinks" — is anchor-independent. This reinforces a methodological point for the field: **per-model subjectivity-correlation should be reported with at least two independent anchors at this sample size**.
 
 ### Methodological contribution
 
@@ -64,6 +72,8 @@ Full v0.3 results:
 - [`leaderboard/v0.3/category_selfpref_lift.png`](leaderboard/v0.3/category_selfpref_lift.png) — per-category self-pref bar chart
 - [`leaderboard/v0.3/subjectivity_correlation.json`](leaderboard/v0.3/subjectivity_correlation.json) — subjectivity ↔ lift Pearson/Spearman per judge (EXP-005)
 - [`leaderboard/v0.3/subjectivity_scatter.png`](leaderboard/v0.3/subjectivity_scatter.png) — subjectivity-lift scatter with regression lines
+- [`leaderboard/v0.3/subjectivity_anchor_robust.png`](leaderboard/v0.3/subjectivity_anchor_robust.png) — EXP-006 dual-anchor side-by-side
+- [`leaderboard/v0.3/subjectivity_anchor_robust.json`](leaderboard/v0.3/subjectivity_anchor_robust.json) — EXP-006 Pearson/Spearman comparison table
 
 ## Install
 
