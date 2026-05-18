@@ -1,0 +1,34 @@
+{
+  "version": "v0.1",
+  "method": "per_pair_offset",
+  "metadata": {
+    "n_judges": 4,
+    "n_generators": 4
+  },
+  "offsets": {
+    "deepseek-chat-judge": {
+      "deepseek-chat": 0.30666666666666664,
+      "doubao-pro-32k": -0.07333333333333333,
+      "glm-4-plus": -0.09333333333333334,
+      "qwen-max": -0.25333333333333335
+    },
+    "glm-4-plus-judge": {
+      "deepseek-chat": 0.15333333333333332,
+      "doubao-pro-32k": 0.16666666666666666,
+      "glm-4-plus": 0.14,
+      "qwen-max": 0.06
+    },
+    "kimi-anchor-judge": {
+      "deepseek-chat": 0.09333333333333334,
+      "doubao-pro-32k": 0.31333333333333335,
+      "glm-4-plus": 0.21333333333333335,
+      "qwen-max": 0.2866666666666667
+    },
+    "qwen-max-judge": {
+      "deepseek-chat": -0.2733333333333333,
+      "doubao-pro-32k": -0.21333333333333335,
+      "glm-4-plus": -0.20666666666666667,
+      "qwen-max": -0.04666666666666667
+    }
+  }
+}

@@ -29,16 +29,16 @@ dev-install:
 	uv sync --extra dev
 
 build-prompts:
-	uv run python -m zhpan.scripts.build_prompts --out data/prompts/v0.2.jsonl
+	uv run python -m zhpan.scripts.build_alignbench --n 150 --out data/prompts/v0.3.jsonl
 
 generate:
-	uv run python -m zhpan.scripts.run_generate --config configs/v0.2.yaml
+	uv run python -m zhpan.scripts.run_generate --config configs/v0.3.yaml
 
 judge:
-	uv run python -m zhpan.scripts.run_judge --config configs/v0.2.yaml
+	uv run python -m zhpan.scripts.run_judge --config configs/v0.3.yaml
 
 analyze:
-	uv run python -m zhpan.scripts.analyze --config configs/v0.2.yaml
+	uv run python -m zhpan.scripts.analyze --config configs/v0.3.yaml
 
 benchmark: build-prompts generate judge analyze
 
@@ -50,7 +50,7 @@ demo:
 	@uv run python -m zhpan.scripts.analyze --config configs/demo.yaml
 
 budget:
-	uv run python -m zhpan.scripts.run_generate --config configs/v0.2.yaml --dry-run
+	uv run python -m zhpan.scripts.run_generate --config configs/v0.3.yaml --dry-run
 
 lint:
 	uv run ruff check src/ tests/

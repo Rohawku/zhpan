@@ -19,6 +19,8 @@ PROBES: list[ModelSpec] = [
               params={"temperature": 0.0, "max_tokens": 30}),
     ModelSpec(name="kimi-anchor", vendor="moonshot", model="moonshot-v1-8k",
               params={"temperature": 0.0, "max_tokens": 30}),
+    ModelSpec(name="ernie-anchor", vendor="qianfan", model="ernie-4.0-8k",
+              params={"temperature": 0.0, "max_tokens": 30}),
 ]
 
 

@@ -11,23 +11,38 @@
 
 ## What is this?
 
-When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judge** the outputs of other models, that judge does **not** score every generator fairly. `zhpan` measures these **per-(judge × generator)** biases on a 52-prompt Chinese hard benchmark with an **independent anchor judge** (Moonshot Kimi) and gives you a `Calibrator` you can drop into any production data-quality pipeline.
+When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judge** the outputs of other models, that judge does **not** score every generator fairly. `zhpan` measures these **per-(judge × generator)** biases on the **AlignBench v1.1** Chinese benchmark using **two independent anchor judges** (Moonshot Kimi and Baidu ERNIE-4.0) and gives you a `Calibrator` you can drop into any production data-quality pipeline.
 
-## v0.2 results — first methodologically clean run
+## v0.3 results — paper-grade with cross-anchor validation
 
-52 hard Chinese prompts × 4 frontier generators × 3 tested judges + 1 anchor judge = **832 real judgments**.
+**Setup**: 150 prompts sampled from [AlignBench v1.1 (THUDM)](https://github.com/THUDM/AlignBench) × 4 frontier generators × 3 tested judges + 2 anchor judges = **3000 real judgments** on production APIs. Total cost ~¥60.
 
-![bias heatmap](leaderboard/v0.2/bias_heatmap.png)
+### Bias matrix (anchor = ERNIE-4.0)
 
-**Three key findings**:
+![bias heatmap](leaderboard/v0.3/bias_heatmap.png)
 
-- 💥 **DeepSeek-chat-judge shows strong self-preference**: rates DeepSeek-chat generator **+0.37** above the Kimi anchor while rating every other generator **-0.08 to -0.22** below it. Self-preference lift = **+0.53**, the first quantitative evidence of self-preference among Chinese frontier judges.
-- 🤝 **Qwen-max-judge and GLM-4-plus-judge show no self-preference** — qwen-judge actually rates itself slightly *below* others (-0.02). This diverges sharply from English-judge literature (GPT-4 / Claude consistently exhibit self-preference) and suggests Chinese RLHF preferences differ.
-- 📐 **Tested judges run systematically more lenient than the Kimi anchor** on DeepSeek-chat (sum +0.75) but stricter on GLM-4-plus (sum -0.33). Anchor judges from outside the tested family are *not* interchangeable.
+### Cross-anchor robustness (Kimi vs ERNIE)
 
-**Methodological contribution**. v0.1 used silver-consensus gold (3 tested judges' mean) and found per-pair bias was tiny. We discovered this was a [**circular-reasoning bug**](experiments/EXPERIMENTS.md): when gold is the mean of the judges being measured, bias mechanically sums to zero across judges. v0.2 fixes this with an independent anchor judge (Kimi, in neither the tested generator nor judge family) — bias magnitude roughly doubles and per-pair patterns finally emerge.
+![cross-anchor](leaderboard/v0.3/anchor_compare_heatmap.png)
 
-Full v0.2 results: [`leaderboard/v0.2/results.json`](leaderboard/v0.2/results.json), [`calibrator.json`](leaderboard/v0.2/calibrator.json), [bias heatmap](leaderboard/v0.2/bias_heatmap.png). The v0.1 (flawed) baseline is preserved at [`leaderboard/v0.1/`](leaderboard/v0.1/) for comparison.
+**Three core findings**:
+
+- 💥 **DeepSeek-chat-judge has robust self-preference** ([+0.45 lift on AlignBench](experiments/EXPERIMENTS.md), reproducing v0.2's finding on a different prompt set, validated by **both** independent anchors). Self-prefers DeepSeek-chat generator at **+0.31** while rating other generators **-0.07 to -0.25**.
+- 🤝 **Qwen-max-judge and GLM-4-plus-judge show no significant self-preference** in either v0.2 or v0.3 (Qwen actually rates own family slightly *below* others). The first quantitative evidence that **self-preference among Chinese frontier judges is heterogeneous**, not universal as English-judge literature suggests.
+- 📐 **Cross-anchor agreement is extremely high**: Kimi-anchor and ERNIE-anchor produce bias matrices with **Pearson ρ = +0.928 (p < 1e-4)**. Even more strikingly, the delta-per-row is *constant* (+0.09, +0.31, +0.21, +0.29), proving mathematically that anchor choice only shifts *generator-wise overall offset*, never the *per-pair pattern*. So **per-pair self-preference signal is anchor-independent**.
+
+### Methodological contribution
+
+`zhpan` v0.1 used silver-consensus gold (mean of tested judges) and found per-pair bias was tiny. We discovered this was a **circular-reasoning bug**: when gold is the mean of the judges being measured, bias mechanically sums to zero across judges. v0.2 fixed this with one independent anchor (Kimi). **v0.3 validates the fix with two independent anchors and a public benchmark (AlignBench)**.
+
+The full v0.1 → v0.2 → v0.3 narrative is in [experiments/EXPERIMENTS.md](experiments/EXPERIMENTS.md).
+
+Full v0.3 results:
+- [`leaderboard/v0.3/results.json`](leaderboard/v0.3/results.json) — bias matrix + 5-fold CV
+- [`leaderboard/v0.3/calibrator.json`](leaderboard/v0.3/calibrator.json) — drop-in calibrator
+- [`leaderboard/v0.3/anchor_compare.json`](leaderboard/v0.3/anchor_compare.json) — Kimi vs ERNIE cross-validation
+- [`leaderboard/v0.3/bias_heatmap.png`](leaderboard/v0.3/bias_heatmap.png) — primary heatmap
+- [`leaderboard/v0.3/anchor_compare_heatmap.png`](leaderboard/v0.3/anchor_compare_heatmap.png) — 3-panel cross-anchor
 
 ## Install
 
@@ -43,16 +58,16 @@ cd zhpan && pip install -e .
 ```python
 from zhpan import Calibrator
 
-cal = Calibrator.from_file("leaderboard/v0.2/calibrator.json")
+cal = Calibrator.from_file("leaderboard/v0.3/calibrator.json")
 fair = cal.correct(judge="deepseek-chat-judge", generator="deepseek-chat", raw_score=8.0)
-# → 7.63  (DeepSeek-judge favours DeepSeek-gen by +0.37, corrected away)
+# → ~7.69  (DeepSeek-judge favours DeepSeek-gen by +0.31, corrected away)
 ```
 
 Or from the command line:
 
 ```bash
 zhpan debias --judge deepseek-chat-judge --gen deepseek-chat --score 8.0 \
-             --calibrator leaderboard/v0.2/calibrator.json
+             --calibrator leaderboard/v0.3/calibrator.json
 ```
 
 ## Try it offline in 30 seconds (no API keys)
@@ -65,36 +80,32 @@ make demo
 ## Run the full benchmark on real APIs
 
 ```bash
-cp .env.example .env       # then fill in 5 API keys (4 vendors + Kimi anchor)
-make build-prompts
-make benchmark             # generate + judge + analyze, ~¥24 total
+cp .env.example .env       # then fill in 6 API keys (4 generators + 2 anchors)
+make build-prompts         # downloads AlignBench v1.1 from THUDM
+make benchmark             # generate + judge + analyze, ~¥60 total
 ```
 
 Supported vendors:
-- **dashscope** — 阿里 Qwen
-- **deepseek** — DeepSeek
-- **zhipu** — 智谱 GLM-4
+- **dashscope** — 阿里 Qwen (qwen-max / plus / turbo)
+- **deepseek** — DeepSeek (chat / reasoner)
+- **zhipu** — 智谱 GLM-4 (glm-4-plus / air)
 - **doubao** — 字节豆包 (Volcengine Ark)
-- **moonshot** — Kimi (used as independent anchor judge)
-- **openai** / **anthropic** / **together** — cross-lingual control (optional)
+- **moonshot** — Kimi (used as anchor judge)
+- **qianfan** — 百度文心 ERNIE-4.0 (used as second anchor)
+- **openai** / **anthropic** / **together** — cross-lingual control (planned for v0.4)
 
-## How it works (v0.2)
+## How it works (v0.3)
 
-1. **Generate.** 52 hard Chinese prompts × N generators → response set.
-2. **Judge.** M tested judges + **1 independent anchor judge** score every response on a 1-10 scale with a 7-dimension breakdown (D1 correctness / D2 reasoning / D3 completeness / D4 on-topic-ness / D5 clarity / D6 depth / D7 safety).
-3. **Anchor gold.** The anchor judge's score is treated as ground-truth. The anchor must be in **neither** the tested generator family nor the tested judge family. This avoids the silver-consensus circular-reasoning bug.
+1. **Generate.** 150 AlignBench prompts × N generators → response set.
+2. **Judge.** M tested judges + **K independent anchor judges** score every response on a 1-10 scale with a 7-dimension breakdown (D1 correctness / D2 reasoning / D3 completeness / D4 on-topic / D5 clarity / D6 depth / D7 safety).
+3. **Anchor gold.** A primary anchor judge's score is treated as ground-truth. Anchor must be in **neither** the tested generator family nor the tested judge family. Independence is the entire point.
 4. **Bias matrix.** `bias[j][g] = mean(judge_j_score - anchor_score)` per (judge, generator) pair.
-5. **Calibrate.** `Calibrator.correct()` subtracts the learned per-pair offset, clipped to [1, 10]. 5-fold prompt-axis CV reports held-out MAE.
+5. **Cross-anchor validation.** Repeat the bias-matrix calculation with a second independent anchor. If the two matrices have high Pearson correlation → the per-pair pattern is real, not anchor-induced.
+6. **Calibrate.** `Calibrator.correct()` subtracts the learned per-pair offset, clipped to [1, 10]. 5-fold prompt-axis CV reports held-out MAE.
 
-## Why the methodology change
+## Why AlignBench
 
-See [experiments/EXPERIMENTS.md](experiments/EXPERIMENTS.md) for the full EXP-001 → EXP-002 narrative, including the diagnostic that uncovered three compounding bugs in v0.1:
-
-1. **Circular silver gold**: Bias against the mean of the same judges mathematically sums to zero across judges.
-2. **Ceiling effect on 1-5 rubric**: 81% of v0.1 judgments were the max score 5; the 1-5 scale degenerated to 4-vs-5.
-3. **Prompts too easy**: v0.1's 40 curated prompts (e.g. "explain why the sky is blue") let frontier models max out the rubric.
-
-v0.2 fixes all three: anchor judge + 1-10 rubric + 52 hard prompts.
+AlignBench (Tsinghua THUDM, Apache-2.0) is a 683-prompt benchmark **specifically designed for LLM-as-judge evaluation of Chinese LLMs**, covering 8 categories (基础语言 / 中文理解 / 综合问答 / 文本写作 / 角色扮演 / 数学推理 / 复杂任务 / 专业知识). Every prompt ships with a reference answer and supporting evidence URLs, making downstream analysis (per-category bias, error analysis) straightforward. Using AlignBench instead of curated prompts means `zhpan`'s bias measurements are directly comparable to AlignBench's published leaderboards.
 
 ## Project layout
 
@@ -104,23 +115,32 @@ zhpan/
 │   ├── calibrate.py
 │   ├── compute_bias.py    # build_gold_anchor() | build_gold_silver() (DEPRECATED)
 │   ├── generate.py
-│   ├── judge.py           # 1-10 + 7-dim rubric (v0.2)
-│   ├── models.py          # 5 Chinese vendors + 3 cross-lingual + mock
-│   └── cli.py
-├── configs/           # v0.2.yaml (real) + demo.yaml (mock)
-├── data/prompts/      # 52 curated hard Chinese prompts
-├── experiments/       # EXP-001 (v0.1) + EXP-002 (v0.2) log
-└── leaderboard/       # v0.1/ (flawed baseline) + v0.2/ (current)
+│   ├── judge.py           # 1-10 + 7-dim rubric (v0.2+)
+│   ├── models.py          # 6 Chinese vendors + 3 cross-lingual + mock
+│   ├── cli.py
+│   └── scripts/
+│       ├── build_alignbench.py   # AlignBench fetcher (v0.3)
+│       ├── anchor_compare.py     # cross-anchor robustness (v0.3)
+│       └── plot_anchor_compare.py
+├── configs/           # v0.3.yaml (current) + v0.2.yaml + demo.yaml
+├── data/prompts/      # AlignBench v0.3 + v0.2 curated + v0.1 (legacy)
+├── experiments/       # EXP-001 → EXP-003 log
+└── leaderboard/       # v0.1/ (flawed) + v0.2/ (1-anchor) + v0.3/ (paper-grade)
 ```
 
 ## Roadmap
 
-See [docs/ROADMAP.md](docs/ROADMAP.md). v0.3 priorities driven by EXP-002:
-- Add second anchor (e.g. GPT-4o) for anchor-robustness check
-- Per-category bias breakdown (reasoning vs writing may diverge)
-- Pairwise judging (A vs B) to further dampen ceiling effects
-- Per-pair *linear* calibration (not just offset) — tested when n ≥ 200
+See [docs/ROADMAP.md](docs/ROADMAP.md). v0.4 priorities:
+- Per-AlignBench-category bias breakdown
+- Add GPT-4o as third (cross-lingual) anchor for further robustness check
+- Pairwise judging mode (A vs B) to dampen residual ceiling effects
+- Per-pair *linear* calibration (not just offset)
+- PyPI release
 
 ## License
 
 [MIT](LICENSE)
+
+## Citation
+
+If `zhpan` is useful for your work, BibTeX coming with PyPI release. AlignBench should be cited per [its repo](https://github.com/THUDM/AlignBench).

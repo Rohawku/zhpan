@@ -1,0 +1,177 @@
+{
+  "anchor_a": "kimi-anchor-judge",
+  "anchor_b": "ernie-anchor-judge",
+  "n_cells": 12,
+  "pearson_r": 0.9276488299715455,
+  "pearson_p": 1.3815781379495589e-05,
+  "spearman_r": 0.8811188811188813,
+  "spearman_p": 0.00015267406467669862,
+  "mae_abs_delta": 0.22666666666666666,
+  "max_abs_delta": 0.31333333333333335,
+  "bias_matrix_anchor_a": {
+    "judges": [
+      "deepseek-chat-judge",
+      "glm-4-plus-judge",
+      "qwen-max-judge"
+    ],
+    "generators": [
+      "deepseek-chat",
+      "doubao-pro-32k",
+      "glm-4-plus",
+      "qwen-max"
+    ],
+    "mean_bias": {
+      "deepseek-chat-judge": {
+        "deepseek-chat": 0.21333333333333335,
+        "doubao-pro-32k": -0.38666666666666666,
+        "glm-4-plus": -0.30666666666666664,
+        "qwen-max": -0.54
+      },
+      "glm-4-plus-judge": {
+        "deepseek-chat": 0.06,
+        "doubao-pro-32k": -0.14666666666666667,
+        "glm-4-plus": -0.07333333333333333,
+        "qwen-max": -0.22666666666666666
+      },
+      "qwen-max-judge": {
+        "deepseek-chat": -0.36666666666666664,
+        "doubao-pro-32k": -0.5266666666666666,
+        "glm-4-plus": -0.42,
+        "qwen-max": -0.3333333333333333
+      }
+    },
+    "std_bias": {
+      "deepseek-chat-judge": {
+        "deepseek-chat": 0.9837795597704916,
+        "doubao-pro-32k": 1.441234039132977,
+        "glm-4-plus": 1.7007710669641056,
+        "qwen-max": 1.8389489751848291
+      },
+      "glm-4-plus-judge": {
+        "deepseek-chat": 1.362497706420088,
+        "doubao-pro-32k": 1.363264056919601,
+        "glm-4-plus": 1.5148010503766567,
+        "qwen-max": 1.5368654968980064
+      },
+      "qwen-max-judge": {
+        "deepseek-chat": 0.890068661521246,
+        "doubao-pro-32k": 0.8461415694525093,
+        "glm-4-plus": 1.0215674231297707,
+        "qwen-max": 0.9775252199076788
+      }
+    },
+    "n": {
+      "deepseek-chat-judge": {
+        "deepseek-chat": 150,
+        "doubao-pro-32k": 150,
+        "glm-4-plus": 150,
+        "qwen-max": 150
+      },
+      "glm-4-plus-judge": {
+        "deepseek-chat": 150,
+        "doubao-pro-32k": 150,
+        "glm-4-plus": 150,
+        "qwen-max": 150
+      },
+      "qwen-max-judge": {
+        "deepseek-chat": 150,
+        "doubao-pro-32k": 150,
+        "glm-4-plus": 150,
+        "qwen-max": 150
+      }
+    },
+    "rank_corr": {
+      "deepseek-chat-judge": -0.39999999999999997,
+      "glm-4-plus-judge": -0.10540925533894598,
+      "qwen-max-judge": 0.7999999999999999
+    },
+    "self_pref_lift": {
+      "deepseek-chat-judge": 0.6244444444444445,
+      "glm-4-plus-judge": 0.031111111111111117,
+      "qwen-max-judge": 0.10444444444444445
+    }
+  },
+  "bias_matrix_anchor_b": {
+    "judges": [
+      "deepseek-chat-judge",
+      "glm-4-plus-judge",
+      "qwen-max-judge"
+    ],
+    "generators": [
+      "deepseek-chat",
+      "doubao-pro-32k",
+      "glm-4-plus",
+      "qwen-max"
+    ],
+    "mean_bias": {
+      "deepseek-chat-judge": {
+        "deepseek-chat": 0.30666666666666664,
+        "doubao-pro-32k": -0.07333333333333333,
+        "glm-4-plus": -0.09333333333333334,
+        "qwen-max": -0.25333333333333335
+      },
+      "glm-4-plus-judge": {
+        "deepseek-chat": 0.15333333333333332,
+        "doubao-pro-32k": 0.16666666666666666,
+        "glm-4-plus": 0.14,
+        "qwen-max": 0.06
+      },
+      "qwen-max-judge": {
+        "deepseek-chat": -0.2733333333333333,
+        "doubao-pro-32k": -0.21333333333333335,
+        "glm-4-plus": -0.20666666666666667,
+        "qwen-max": -0.04666666666666667
+      }
+    },
+    "std_bias": {
+      "deepseek-chat-judge": {
+        "deepseek-chat": 1.0704931366223491,
+        "doubao-pro-32k": 1.3421210410722606,
+        "glm-4-plus": 1.4063980786233872,
+        "qwen-max": 1.3475244792664147
+      },
+      "glm-4-plus-judge": {
+        "deepseek-chat": 1.4082455593949357,
+        "doubao-pro-32k": 1.3682917167849196,
+        "glm-4-plus": 1.4469738537144798,
+        "qwen-max": 1.5197806859324583
+      },
+      "qwen-max-judge": {
+        "deepseek-chat": 1.0513272035331764,
+        "doubao-pro-32k": 0.9135036337579008,
+        "glm-4-plus": 0.9330713918142719,
+        "qwen-max": 0.9333571425534578
+      }
+    },
+    "n": {
+      "deepseek-chat-judge": {
+        "deepseek-chat": 150,
+        "doubao-pro-32k": 150,
+        "glm-4-plus": 150,
+        "qwen-max": 150
+      },
+      "glm-4-plus-judge": {
+        "deepseek-chat": 150,
+        "doubao-pro-32k": 150,
+        "glm-4-plus": 150,
+        "qwen-max": 150
+      },
+      "qwen-max-judge": {
+        "deepseek-chat": 150,
+        "doubao-pro-32k": 150,
+        "glm-4-plus": 150,
+        "qwen-max": 150
+      }
+    },
+    "rank_corr": {
+      "deepseek-chat-judge": 0.39999999999999997,
+      "glm-4-plus-judge": 0.632455532033676,
+      "qwen-max-judge": 0.7999999999999999
+    },
+    "self_pref_lift": {
+      "deepseek-chat-judge": 0.44666666666666666,
+      "glm-4-plus-judge": 0.013333333333333364,
+      "qwen-max-judge": 0.18444444444444447
+    }
+  }
+}

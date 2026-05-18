@@ -48,6 +48,11 @@ _COST_PER_M_TOK = {
     "moonshot-v1-32k": {"in": 3.30, "out": 3.30},
     "moonshot-v1-128k": {"in": 8.30, "out": 8.30},
     "kimi-latest": {"in": 0.275, "out": 1.65},
+    # 百度文心 (used as second anchor judge in v0.3)
+    "ernie-4.0-8k": {"in": 4.00, "out": 16.00},
+    "ernie-4.0-turbo-8k": {"in": 4.00, "out": 16.00},
+    "ernie-3.5-8k": {"in": 0.80, "out": 2.00},
+    "ernie-speed-128k": {"in": 0.00, "out": 0.00},  # free tier
     # Cross-lingual control
     "gpt-4o": {"in": 2.5, "out": 10.0},
     "gpt-4o-mini": {"in": 0.15, "out": 0.6},
@@ -244,6 +249,18 @@ class MoonshotClient(_OpenAICompatibleClient):
     api_key_env = "MOONSHOT_API_KEY"
 
 
+class QianfanClient(_OpenAICompatibleClient):
+    """百度千帆 (ERNIE) via OpenAI-compatible v2 endpoint.
+
+    Used as independent anchor judge in zhpan v0.3+. Baidu sits outside the
+    Alibaba/DeepSeek/Zhipu/ByteDance/Moonshot tested set, providing genuine
+    family independence for cross-anchor robustness validation.
+    """
+
+    base_url = "https://qianfan.baidubce.com/v2"
+    api_key_env = "QIANFAN_API_KEY"
+
+
 class TogetherClient(_OpenAICompatibleClient):
     base_url = "https://api.together.xyz/v1"
     api_key_env = "TOGETHER_API_KEY"
@@ -412,6 +429,7 @@ _REGISTRY: dict[str, type[BaseClient]] = {
     "zhipu": ZhipuClient,
     "doubao": DoubaoClient,
     "moonshot": MoonshotClient,
+    "qianfan": QianfanClient,
     "openai": OpenAIClient,
     "anthropic": AnthropicClient,
     "together": TogetherClient,
