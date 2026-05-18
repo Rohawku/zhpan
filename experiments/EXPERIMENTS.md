@@ -17,6 +17,40 @@
 
 ## Experiments
 
+### EXP-005 (2026-05-18) — Subjectivity ↔ self-pref hypothesis test (free, reuses EXP-004 data)
+
+- Layer: 分析 only — 复用 EXP-004 的 per-category lift
+- Hypothesis (来自 EXP-004 的猜想): 任务越主观，judge self-pref 越强
+- Method:
+  1. 给 AlignBench 8 个 main category 标主观性分（1=最客观~5=最主观）:
+     1.0 Math · 1.5 Domain-Expert · 2.0 Basic-Task · 2.5 Reasoning · 3.0 Open-QA · 3.5 Chinese-NLU · 4.5 Writing · 5.0 Roleplay
+  2. 每个 tested judge 算 (subjectivity, lift) 8 对的 Pearson + Spearman 相关
+- 代理指标 (per tested judge):
+
+| Judge | Pearson ρ | p | Spearman ρ | p | 解读 |
+|---|---|---|---|---|---|
+| **deepseek-chat-judge** | **+0.818** | **0.013** | **+0.929** | **0.001** | ✓ 强正相关：任务越主观 self-pref 越强 |
+| **glm-4-plus-judge** | **−0.724** | **0.042** | **−0.833** | **0.010** | ✗ **反向显著相关**：越主观 GLM 反而越**反**偏好自家 |
+| qwen-max-judge | +0.139 | 0.742 | +0.286 | 0.493 | 无显著相关 |
+
+- Decision: **keep & publish** — 这是个 surprising but statistically robust finding
+- 关键发现：
+  1. **"主观性 ↔ self-pref" hypothesis 被部分证伪**。DeepSeek 完全支持（ρ=+0.82, p=0.013），但 GLM **反向且显著**（ρ=−0.72, p=0.042），Qwen 无相关。
+  2. **Judges 在 bias-vs-subjectivity 上的 pattern 高度异质**。文献里假设 LLM-as-Judge 偏差有共同 mechanism，本实验否定：DeepSeek 和 GLM 在同一坐标系下呈**相反**对角线，统计上都显著（n=8，p<0.05）。
+  3. **GLM 反向相关的可能解释**（待 EXP-006/007 验证）:
+     - GLM 在 RLHF/对齐阶段对主观任务的"自我抑制"特别强（公平性 over-correction）
+     - GLM 在客观任务上对自家代码/数学格式有偏好（Basic-Task +0.72 是主要 driver）
+     - Anchor (ERNIE-4.0) 在主观任务上系统性偏好 GLM 风格，造成"反 self-pref"假象
+  4. **DeepSeek pattern 在 anchor robust 范围内**：v0.2 (Kimi anchor) 与 v0.3 (ERNIE) 上 self-pref 都 +0.45~+0.53，且 EXP-004 的 8 个 category 一致正
+  5. **方法学 implication**: LLM-as-Judge benchmark 在报告 self-pref 时**必须同时给 per-category 拆分**。Overall lift 在 n=150 上对 GLM 是 +0.01 — 一个完全 misleading 的数字
+- 文件:
+  - `leaderboard/v0.3/subjectivity_correlation.json`（per-judge Pearson/Spearman + p）
+  - `leaderboard/v0.3/subjectivity_scatter.png`（scatter + per-judge regression lines）
+- Next:
+  1. EXP-006: 看 GLM 反向相关是否是 anchor artifact（用 Kimi anchor 重做相同分析）
+  2. EXP-007: 加入 Qwen-judge 在每个 subcategory 的 lift，看 Qwen 的"无相关"是不是因为 sample 不够（Reasoning +0.46 而 Basic-Task -0.12 是同样量级的正/负 lift）
+
+
 ### EXP-004 (2026-05-18) — Per-category bias breakdown (free, reuses EXP-003 data)
 
 - Layer: 分析 only — 复用 EXP-003 的 3000 judgments，按 AlignBench 原始 category 拆分

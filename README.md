@@ -29,6 +29,10 @@ When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judg
 
 ![per-category lift](leaderboard/v0.3/category_selfpref_lift.png)
 
+### Subjectivity ↔ self-preference: hypothesis tested (EXP-005)
+
+![subjectivity scatter](leaderboard/v0.3/subjectivity_scatter.png)
+
 **Three core findings**:
 
 - 💥 **DeepSeek-chat-judge has robust self-preference** ([+0.45 lift on AlignBench](experiments/EXPERIMENTS.md), reproducing v0.2's finding on a different prompt set, validated by **both** independent anchors). Self-prefers DeepSeek-chat generator at **+0.31** while rating other generators **-0.07 to -0.25**.
@@ -38,6 +42,10 @@ When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judg
 **Fourth finding (EXP-004, per-category breakdown)**:
 
 - 🎭 **Overall self-preference lift hides strong task-type heterogeneity**. GLM-4-plus-judge's overall lift is **+0.01** (looks like no self-preference), but split by AlignBench category: it favours its own family by **+0.72 on Basic-Task** and **+0.28 on Math**, while *reverse*-preferring (-0.40, -0.33) on Chinese-NLU and Roleplay. Averaging across categories cancels these out. DeepSeek-judge's self-preference is consistent (+0.14 to +0.68 across categories), strongest on subjective tasks (Chinese-NLU, Roleplay) and weakest on objective ones (Math, Domain-Expert). This generates a testable hypothesis: **task subjectivity correlates with self-preference magnitude**.
+
+**Fifth finding (EXP-005, subjectivity hypothesis test)**:
+
+- 🧪 **The "subjectivity → self-preference" hypothesis is partly refuted**. We assigned a subjectivity score (1=Math, 5=Roleplay) to each AlignBench category and tested correlation with each judge's per-category lift. **DeepSeek-chat-judge has Pearson ρ = +0.82 (p=0.013), Spearman ρ = +0.93 (p=0.001) — strongly supporting the hypothesis**. But **GLM-4-plus-judge has Pearson ρ = −0.72 (p=0.042) — the opposite, significantly**. Qwen-max-judge shows no correlation. Conclusion: there is **no universal subjectivity-bias law** for LLM-as-Judge; the pattern is per-model and can be inverted. This is, to our knowledge, the first quantitative report of inverse subjectivity-correlation in a Chinese frontier judge.
 
 ### Methodological contribution
 
@@ -54,6 +62,8 @@ Full v0.3 results:
 - [`leaderboard/v0.3/anchor_compare_heatmap.png`](leaderboard/v0.3/anchor_compare_heatmap.png) — 3-panel cross-anchor
 - [`leaderboard/v0.3/category_bias_heatmap.png`](leaderboard/v0.3/category_bias_heatmap.png) — 8 mini-heatmaps by category
 - [`leaderboard/v0.3/category_selfpref_lift.png`](leaderboard/v0.3/category_selfpref_lift.png) — per-category self-pref bar chart
+- [`leaderboard/v0.3/subjectivity_correlation.json`](leaderboard/v0.3/subjectivity_correlation.json) — subjectivity ↔ lift Pearson/Spearman per judge (EXP-005)
+- [`leaderboard/v0.3/subjectivity_scatter.png`](leaderboard/v0.3/subjectivity_scatter.png) — subjectivity-lift scatter with regression lines
 
 ## Install
 
