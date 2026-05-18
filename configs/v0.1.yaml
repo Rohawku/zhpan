@@ -28,7 +28,7 @@ generators:
 
   - name: doubao-pro-32k
     vendor: doubao
-    model: doubao-pro-32k-241215
+    model: doubao-1-5-pro-32k-250115
     params:
       temperature: 0.7
       max_tokens: 1024
