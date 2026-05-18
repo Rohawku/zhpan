@@ -1,0 +1,72 @@
+version: v0.1
+
+prompts:
+  path: data/prompts/v0.1.jsonl
+
+# ─── 中文 frontier generators ──────────────────────────────
+generators:
+  - name: qwen-max
+    vendor: dashscope
+    model: qwen-max-2025-01-25
+    params:
+      temperature: 0.7
+      max_tokens: 1024
+
+  - name: deepseek-chat
+    vendor: deepseek
+    model: deepseek-chat
+    params:
+      temperature: 0.7
+      max_tokens: 1024
+
+  - name: glm-4-plus
+    vendor: zhipu
+    model: glm-4-plus
+    params:
+      temperature: 0.7
+      max_tokens: 1024
+
+  - name: doubao-pro-32k
+    vendor: doubao
+    model: doubao-pro-32k-241215
+    params:
+      temperature: 0.7
+      max_tokens: 1024
+
+# ─── 中文 judges（3 个，同家族便于测 self-preference） ──────
+judges:
+  - name: qwen-max-judge
+    vendor: dashscope
+    model: qwen-max-2025-01-25
+    params:
+      temperature: 0.0
+      max_tokens: 200
+
+  - name: deepseek-chat-judge
+    vendor: deepseek
+    model: deepseek-chat
+    params:
+      temperature: 0.0
+      max_tokens: 200
+
+  - name: glm-4-plus-judge
+    vendor: zhipu
+    model: glm-4-plus
+    params:
+      temperature: 0.0
+      max_tokens: 200
+
+generation:
+  output_dir: data/generations/v0.1
+  concurrency: 5
+  cache: true
+
+judging:
+  output_dir: data/judgments/v0.1
+  concurrency: 5
+  cache: true
+
+cache_root: data/cache
+
+budget:
+  max_usd: 30

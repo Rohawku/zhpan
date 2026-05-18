@@ -1,0 +1,99 @@
+# ──────────────────────────────────────────
+# Secrets — NEVER commit
+# ──────────────────────────────────────────
+.env
+.env.local
+*.key
+secrets/
+
+# ──────────────────────────────────────────
+# Data — large / regeneratable / cost-incurring
+# ──────────────────────────────────────────
+# Generations and judgments are reproducible from configs + API,
+# but expensive to re-create. Keep local, don't push.
+data/generations/*
+!data/generations/.gitkeep
+!data/generations/README.md
+
+data/judgments/*
+!data/judgments/.gitkeep
+!data/judgments/README.md
+
+# API response cache — never share
+data/cache/*
+!data/cache/.gitkeep
+
+# Experiment run artifacts (logs, intermediate files)
+experiments/runs/*
+!experiments/runs/.gitkeep
+
+# Prompts and gold annotations: small, version-controlled
+# (do not ignore data/prompts/ or data/gold/)
+
+# ──────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+# uv / pip
+.uv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ──────────────────────────────────────────
+# Jupyter
+# ──────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Strip outputs from notebooks before commit (use nbstripout)
+# notebooks/*.ipynb  # uncomment if you want to ignore notebooks entirely
+
+# ──────────────────────────────────────────
+# Tooling / Editor
+# ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Type checkers
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+# ──────────────────────────────────────────
+# Logs
+# ──────────────────────────────────────────
+*.log
+logs/
+
+# ──────────────────────────────────────────
+# Local scratch
+# ──────────────────────────────────────────
+scratch/
+tmp/
+*.tmp

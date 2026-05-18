@@ -1,0 +1,205 @@
+{
+  "version": "demo",
+  "n_judgments": 480,
+  "judges": [
+    "mock-judge-deepseek",
+    "mock-judge-glm",
+    "mock-judge-qwen"
+  ],
+  "generators": [
+    "mock-deepseek",
+    "mock-doubao",
+    "mock-glm",
+    "mock-qwen"
+  ],
+  "bias_matrix": {
+    "judges": [
+      "mock-judge-deepseek",
+      "mock-judge-glm",
+      "mock-judge-qwen"
+    ],
+    "generators": [
+      "mock-deepseek",
+      "mock-doubao",
+      "mock-glm",
+      "mock-qwen"
+    ],
+    "mean_bias": {
+      "mock-judge-deepseek": {
+        "mock-deepseek": 0.4166666666666668,
+        "mock-doubao": 0.041666666666666664,
+        "mock-glm": -0.3833333333333333,
+        "mock-qwen": -0.3083333333333331
+      },
+      "mock-judge-glm": {
+        "mock-deepseek": -0.2833333333333332,
+        "mock-doubao": -0.2333333333333333,
+        "mock-glm": 0.6666666666666667,
+        "mock-qwen": -0.20833333333333312
+      },
+      "mock-judge-qwen": {
+        "mock-deepseek": -0.13333333333333322,
+        "mock-doubao": 0.19166666666666668,
+        "mock-glm": -0.2833333333333333,
+        "mock-qwen": 0.5166666666666668
+      }
+    },
+    "std_bias": {
+      "mock-judge-deepseek": {
+        "mock-deepseek": 0.39264063297965823,
+        "mock-doubao": 0.3665719574653795,
+        "mock-glm": 0.37675515184857716,
+        "mock-qwen": 0.25152313787977615
+      },
+      "mock-judge-glm": {
+        "mock-deepseek": 0.3617089069035117,
+        "mock-doubao": 0.32659863237109044,
+        "mock-glm": 0.4013864859597432,
+        "mock-qwen": 0.25481474752367755
+      },
+      "mock-judge-qwen": {
+        "mock-deepseek": 0.33166247903553997,
+        "mock-doubao": 0.36429154990657325,
+        "mock-glm": 0.39826010484495067,
+        "mock-qwen": 0.34115815817431205
+      }
+    },
+    "n": {
+      "mock-judge-deepseek": {
+        "mock-deepseek": 40,
+        "mock-doubao": 40,
+        "mock-glm": 40,
+        "mock-qwen": 40
+      },
+      "mock-judge-glm": {
+        "mock-deepseek": 40,
+        "mock-doubao": 40,
+        "mock-glm": 40,
+        "mock-qwen": 40
+      },
+      "mock-judge-qwen": {
+        "mock-deepseek": 40,
+        "mock-doubao": 40,
+        "mock-glm": 40,
+        "mock-qwen": 40
+      }
+    },
+    "rank_corr": {
+      "mock-judge-deepseek": 0.6000000000000001,
+      "mock-judge-glm": 0.39999999999999997,
+      "mock-judge-qwen": 0.7999999999999999
+    },
+    "self_pref_lift": {
+      "mock-judge-deepseek": 0.6333333333333333,
+      "mock-judge-glm": 0.9083333333333333,
+      "mock-judge-qwen": 0.5916666666666668
+    }
+  },
+  "calibrated_mae": {
+    "mock-judge-deepseek": {
+      "mock-deepseek": {
+        "mae_before": 0.4166666666666668,
+        "mae_after": 0.35416666666666674,
+        "n": 40
+      },
+      "mock-doubao": {
+        "mae_before": 0.275,
+        "mae_after": 0.2875,
+        "n": 40
+      },
+      "mock-glm": {
+        "mae_before": 0.4333333333333333,
+        "mae_after": 0.3099999999999998,
+        "n": 40
+      },
+      "mock-qwen": {
+        "mae_before": 0.3083333333333331,
+        "mae_after": 0.1541666666666664,
+        "n": 40
+      }
+    },
+    "mock-judge-glm": {
+      "mock-deepseek": {
+        "mae_before": 0.29999999999999993,
+        "mae_after": 0.2858333333333333,
+        "n": 40
+      },
+      "mock-doubao": {
+        "mae_before": 0.3,
+        "mae_after": 0.27666666666666667,
+        "n": 40
+      },
+      "mock-glm": {
+        "mae_before": 0.6666666666666667,
+        "mae_after": 0.31666666666666676,
+        "n": 40
+      },
+      "mock-qwen": {
+        "mae_before": 0.2583333333333332,
+        "mae_after": 0.1906249999999999,
+        "n": 40
+      }
+    },
+    "mock-judge-qwen": {
+      "mock-deepseek": {
+        "mae_before": 0.23333333333333325,
+        "mae_after": 0.2566666666666665,
+        "n": 40
+      },
+      "mock-doubao": {
+        "mae_before": 0.3083333333333334,
+        "mae_after": 0.3083333333333334,
+        "n": 40
+      },
+      "mock-glm": {
+        "mae_before": 0.38333333333333336,
+        "mae_after": 0.32666666666666666,
+        "n": 40
+      },
+      "mock-qwen": {
+        "mae_before": 0.5333333333333335,
+        "mae_after": 0.28416666666666685,
+        "n": 40
+      }
+    }
+  },
+  "cv_eval": {
+    "folds": [
+      {
+        "fold": 0,
+        "n": 96,
+        "mae_before": 0.375,
+        "mae_after": 0.27886284722222215
+      },
+      {
+        "fold": 1,
+        "n": 96,
+        "mae_before": 0.2916666666666667,
+        "mae_after": 0.3369140625
+      },
+      {
+        "fold": 2,
+        "n": 96,
+        "mae_before": 0.4305555555555555,
+        "mae_after": 0.29535590277777773
+      },
+      {
+        "fold": 3,
+        "n": 96,
+        "mae_before": 0.3819444444444445,
+        "mae_after": 0.28515624999999994
+      },
+      {
+        "fold": 4,
+        "n": 96,
+        "mae_before": 0.36111111111111116,
+        "mae_after": 0.2526041666666667
+      }
+    ],
+    "summary": {
+      "mae_before": 0.3680555555555556,
+      "mae_after": 0.2897786458333333,
+      "n_folds": 5
+    }
+  }
+}

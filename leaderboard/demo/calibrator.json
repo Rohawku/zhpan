@@ -1,0 +1,28 @@
+{
+  "version": "v0.1",
+  "method": "per_pair_offset",
+  "metadata": {
+    "n_judges": 3,
+    "n_generators": 4
+  },
+  "offsets": {
+    "mock-judge-deepseek": {
+      "mock-deepseek": 0.4166666666666668,
+      "mock-doubao": 0.041666666666666664,
+      "mock-glm": -0.3833333333333333,
+      "mock-qwen": -0.3083333333333331
+    },
+    "mock-judge-glm": {
+      "mock-deepseek": -0.2833333333333332,
+      "mock-doubao": -0.2333333333333333,
+      "mock-glm": 0.6666666666666667,
+      "mock-qwen": -0.20833333333333312
+    },
+    "mock-judge-qwen": {
+      "mock-deepseek": -0.13333333333333322,
+      "mock-doubao": 0.19166666666666668,
+      "mock-glm": -0.2833333333333333,
+      "mock-qwen": 0.5166666666666668
+    }
+  }
+}

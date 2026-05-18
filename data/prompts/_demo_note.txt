@@ -1,0 +1,5 @@
+"""Demo prompts for the mock-only end-to-end run (`make demo`).
+
+Generated once when `make demo` is invoked. We use the curated set's first 8
+items to keep the demo run fast (<5s).
+"""

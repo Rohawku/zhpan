@@ -1,0 +1,45 @@
+# Mock demo config — no API keys, no money. Run: make demo
+version: demo
+
+prompts:
+  path: data/prompts/demo.jsonl
+
+generators:
+  - name: mock-qwen
+    vendor: mock
+    model: mock
+  - name: mock-deepseek
+    vendor: mock
+    model: mock
+  - name: mock-glm
+    vendor: mock
+    model: mock
+  - name: mock-doubao
+    vendor: mock
+    model: mock
+
+judges:
+  - name: mock-judge-qwen
+    vendor: mock
+    model: mock
+  - name: mock-judge-deepseek
+    vendor: mock
+    model: mock
+  - name: mock-judge-glm
+    vendor: mock
+    model: mock
+
+generation:
+  output_dir: data/generations/demo
+  concurrency: 10
+  cache: false
+
+judging:
+  output_dir: data/judgments/demo
+  concurrency: 10
+  cache: false
+
+cache_root: data/cache_demo
+
+budget:
+  max_usd: 0
