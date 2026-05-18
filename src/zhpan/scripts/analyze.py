@@ -1,7 +1,11 @@
-"""CLI: python -m zhpan.scripts.analyze --config configs/v0.1.yaml
+"""CLI: python -m zhpan.scripts.analyze --config configs/v0.2.yaml
 
-Reads judgments, builds silver gold, computes bias matrix, fits a Calibrator,
-runs 5-fold CV, and writes results + leaderboard JSON.
+Reads judgments, builds gold (anchor if configured, else silver consensus),
+computes bias matrix, fits a Calibrator, runs 5-fold CV, writes leaderboard.
+
+v0.2 introduces ``anchor_judge`` in the config: a single judge whose scores
+serve as independent gold. This breaks the silver-consensus circular-reasoning
+bug discovered in EXP-001.
 """
 
 from __future__ import annotations
@@ -10,8 +14,8 @@ import argparse
 import json
 from pathlib import Path
 
-from zhpan.calibrate import Calibrator, cv_eval, fit_from_judgments
-from zhpan.compute_bias import calibrated_mae
+from zhpan.calibrate import cv_eval, fit_from_judgments
+from zhpan.compute_bias import build_gold_anchor, build_gold_silver, calibrated_mae
 from zhpan.utils import get_logger, load_yaml_config, read_jsonl
 
 log = get_logger("zhpan.cli.analyze")
@@ -30,9 +34,18 @@ def main() -> None:
     judgments = read_jsonl(jud_dir / "judgments.jsonl")
     log.info(f"Loaded {len(judgments)} judgments")
 
-    cal, bm = fit_from_judgments(judgments)
-    cv = cv_eval(judgments, n_folds=5)
-    cal_mae = calibrated_mae(judgments, gold=_silver_gold_from(judgments), calibrator=cal)
+    anchor_judge = cfg.get("anchor_judge")
+    if anchor_judge:
+        log.info(f"Using anchor judge: {anchor_judge!r}")
+
+    cal, bm = fit_from_judgments(judgments, anchor_judge=anchor_judge)
+    cv = cv_eval(judgments, n_folds=5, anchor_judge=anchor_judge)
+
+    if anchor_judge:
+        gold_for_mae = build_gold_anchor(judgments, anchor_judge=anchor_judge)
+    else:
+        gold_for_mae = build_gold_silver(judgments)
+    cal_mae = calibrated_mae(judgments, gold=gold_for_mae, calibrator=cal)
 
     out_dir = Path(args.out_dir) if args.out_dir else Path("leaderboard") / version
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -41,6 +54,7 @@ def main() -> None:
     summary = {
         "version": version,
         "n_judgments": len(judgments),
+        "anchor_judge": anchor_judge,
         "judges": bm.judges,
         "generators": bm.generators,
         "bias_matrix": bm.to_dict(),
@@ -55,15 +69,15 @@ def main() -> None:
     log.info(f"Wrote results   → {out_dir / 'results.json'}")
 
 
-def _silver_gold_from(judgments):
-    from zhpan.compute_bias import build_gold_silver
-
-    return build_gold_silver(judgments)
-
-
 def _print_readable_summary(summary: dict) -> None:
     bm = summary["bias_matrix"]
-    print("\n──────────────── Bias Matrix (mean) ────────────────")
+    anchor = summary.get("anchor_judge")
+    print("\n" + "─" * 72)
+    if anchor:
+        print(f"Bias Matrix (mean)  —  gold = anchor judge {anchor!r}")
+    else:
+        print("Bias Matrix (mean)  —  gold = silver consensus (DEPRECATED for bias)")
+    print("─" * 72)
     judges = bm["judges"]
     generators = bm["generators"]
     header = "judge \\ generator".ljust(28) + " ".join(g[:14].ljust(15) for g in generators)
@@ -77,6 +91,18 @@ def _print_readable_summary(summary: dict) -> None:
     cv = summary["cv_eval"]["summary"]
     print(f"\n5-fold CV held-out MAE: {cv.get('mae_before', float('nan')):.3f} → "
           f"{cv.get('mae_after', float('nan')):.3f} (calibrated)")
+    print()
+    # Sanity check: anchor mode should NOT have sum-to-zero down columns
+    if anchor:
+        print("Sum-of-biases per generator (should be ≠ 0 under anchor gold):")
+        for g in generators:
+            s = sum(bm["mean_bias"][j].get(g, 0.0) for j in judges)
+            print(f"  {g:<22} sum = {s:+.4f}")
+    else:
+        print("Sum-of-biases per generator (= 0 mechanically under silver gold):")
+        for g in generators:
+            s = sum(bm["mean_bias"][j].get(g, 0.0) for j in judges)
+            print(f"  {g:<22} sum = {s:+.4f}")
 
 
 if __name__ == "__main__":

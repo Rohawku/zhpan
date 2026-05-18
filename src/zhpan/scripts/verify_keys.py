@@ -1,7 +1,6 @@
 """Verify each configured vendor responds with a 1-prompt smoke test.
 
-Cost: each call < ¥0.001. Total: ~¥0.005. Used to confirm API keys + model names
-before running the full benchmark.
+Cost: each call < ¥0.001. Used to confirm API keys + model names before benchmark.
 """
 
 import asyncio
@@ -18,6 +17,8 @@ PROBES: list[ModelSpec] = [
               params={"temperature": 0.0, "max_tokens": 30}),
     ModelSpec(name="doubao-pro-32k", vendor="doubao", model="doubao-1-5-pro-32k-250115",
               params={"temperature": 0.0, "max_tokens": 30}),
+    ModelSpec(name="kimi-anchor", vendor="moonshot", model="moonshot-v1-8k",
+              params={"temperature": 0.0, "max_tokens": 30}),
 ]
 
 
@@ -28,19 +29,14 @@ async def probe_one(spec: ModelSpec) -> dict:
             [{"role": "user", "content": "请用一句话回答：你好。"}],
         )
         return {
-            "spec": spec.name,
-            "vendor": spec.vendor,
-            "model": spec.model,
+            "spec": spec.name, "vendor": spec.vendor, "model": spec.model,
             "ok": True,
             "preview": result.text[:80].replace("\n", " "),
-            "in_tokens": result.in_tokens,
-            "out_tokens": result.out_tokens,
+            "in_tokens": result.in_tokens, "out_tokens": result.out_tokens,
         }
     except Exception as e:
         return {
-            "spec": spec.name,
-            "vendor": spec.vendor,
-            "model": spec.model,
+            "spec": spec.name, "vendor": spec.vendor, "model": spec.model,
             "ok": False,
             "error": f"{type(e).__name__}: {str(e)[:200]}",
         }

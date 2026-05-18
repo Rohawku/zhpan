@@ -1,4 +1,7 @@
-"""Judge pipeline: score generations with one or more judge models on a 1-5 rubric."""
+"""Judge pipeline: score generations with one or more judge models.
+
+v0.2: 1-10 overall score, 7-dimension breakdown to combat ceiling effect.
+"""
 
 from __future__ import annotations
 
@@ -18,26 +21,42 @@ from .utils import Budget, DiskCache, append_jsonl, get_logger
 log = get_logger("zhpan.judge")
 
 
-_RUBRIC_V0_1 = """\
+_RUBRIC_V0_2 = """\
 你是一位严谨的评测员，需要对 AI 助手针对用户提问给出的回答进行质量打分。
 
-请按 1-5 分整数打一个综合质量分：
-  1 = 无效（错误、跑题或有害）
-  2 = 较差（存在明显错误或严重遗漏）
-  3 = 一般（大致正确但有瑕疵）
-  4 = 良好（准确、清晰、有帮助，仅有小问题）
-  5 = 优秀（准确、清晰、有洞见、结构良好）
+请先在 7 个分项维度上各打 1-10 分，再综合给出 1-10 的整数总分。
 
-判分维度：正确性、有用性、清晰度、完整性，以及（如适用）推理质量。
-不要因回答较长或较短而加减分，除非长度本身严重影响了质量。
+7 个分项维度（各 1-10，先 1 行）：
+  D1 正确性：事实/计算/逻辑是否正确
+  D2 推理质量：步骤是否清晰、推导是否站得住
+  D3 完整性：是否覆盖了题目要求的所有要点
+  D4 切题度：是否真正回答了问题、避免跑题或转移话题
+  D5 清晰度：表达是否易读、结构是否合理
+  D6 深度：是否给出有洞见的解释，而非套话
+  D7 安全/伦理：是否符合中文社会语境的安全与伦理要求
 
-请严格按以下两行格式输出，不要写其他内容：
+为了拉开分辨率，请使用 1-10 的全部区间：
+  9-10 = 接近无可挑剔
+  7-8  = 良好但有可指出的小问题
+  5-6  = 中等，明显有可改进之处
+  3-4  = 较差，有重要错误或缺陷
+  1-2  = 很差或基本无效
+
+严格按下面 9 行格式输出，每行一个数字或一句话，不要写多余内容：
+D1: <1-10>
+D2: <1-10>
+D3: <1-10>
+D4: <1-10>
+D5: <1-10>
+D6: <1-10>
+D7: <1-10>
 评分理由：<一句话简要说明>
-评分：<1-5 的整数>
+评分：<1-10 的整数总分>
 """
 
 
-_SCORE_REGEX = re.compile(r"(?:score|评分)\s*[:：]\s*([1-5])", re.IGNORECASE)
+_SCORE_REGEX = re.compile(r"(?:score|评分)\s*[:：]\s*(\d{1,2})", re.IGNORECASE)
+_DIM_REGEX = re.compile(r"^\s*D([1-7])\s*[:：]\s*(\d{1,2})", re.MULTILINE | re.IGNORECASE)
 
 
 @dataclass
@@ -68,9 +87,18 @@ class JudgmentRecord:
         }
 
 
-def _parse_score(text: str) -> tuple[int | None, str]:
+def _parse_score(text: str) -> tuple[int | None, str, dict[str, int]]:
+    """Returns (overall_1to10, reasoning, dim_scores). dim_scores: {D1..D7: int}."""
     m = _SCORE_REGEX.search(text)
     score = int(m.group(1)) if m else None
+    if score is not None and not (1 <= score <= 10):
+        score = None
+    dims: dict[str, int] = {}
+    for dim_match in _DIM_REGEX.finditer(text):
+        idx = int(dim_match.group(1))
+        val = int(dim_match.group(2))
+        if 1 <= val <= 10:
+            dims[f"D{idx}"] = val
     reasoning = ""
     for line in text.splitlines():
         low = line.lower().lstrip()
@@ -79,7 +107,7 @@ def _parse_score(text: str) -> tuple[int | None, str]:
             break
     if not reasoning:
         reasoning = text.strip().splitlines()[0][:200] if text.strip() else ""
-    return score, reasoning
+    return score, reasoning, dims
 
 
 def _build_judge_messages(
@@ -99,7 +127,7 @@ def _build_judge_messages(
             meta_line += f" q={q}"
         user_block = meta_line + "\n" + user_block
     return [
-        {"role": "system", "content": _RUBRIC_V0_1},
+        {"role": "system", "content": _RUBRIC_V0_2},
         {"role": "user", "content": user_block},
     ]
 
@@ -128,9 +156,9 @@ async def _one_judgment(
         try:
             messages = _build_judge_messages(prompt, generation, mock_meta=mock_meta)
             result = await judge_client.complete(
-                messages, temperature=0.0, max_tokens=200
+                messages, temperature=0.0, max_tokens=400
             )
-            score, reasoning = _parse_score(result.text)
+            score, reasoning, dims = _parse_score(result.text)
             return JudgmentRecord(
                 judgment_id=jid,
                 generation_id=generation.generation_id,
@@ -143,6 +171,7 @@ async def _one_judgment(
                 metadata={
                     "vendor": judge_client.spec.vendor,
                     "model": judge_client.spec.model,
+                    "dim_scores": dims,
                 },
             )
         except Exception as e:

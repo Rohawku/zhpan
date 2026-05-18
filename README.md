@@ -11,25 +11,23 @@
 
 ## What is this?
 
-When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judge** the outputs of other models, that judge does **not** score every generator fairly. `zhpan` measures these **per-(judge × generator)** biases on a 40-prompt Chinese benchmark and gives you a `Calibrator` you can drop into any production data-quality pipeline.
+When you use a Chinese frontier LLM (Qwen / DeepSeek / GLM-4 / Doubao) to **judge** the outputs of other models, that judge does **not** score every generator fairly. `zhpan` measures these **per-(judge × generator)** biases on a 52-prompt Chinese hard benchmark with an **independent anchor judge** (Moonshot Kimi) and gives you a `Calibrator` you can drop into any production data-quality pipeline.
 
-## v0.1 results — first real run
+## v0.2 results — first methodologically clean run
 
-40 curated Chinese prompts × 4 frontier generators × 3 frontier judges = **480 real judgments** against actual production APIs.
+52 hard Chinese prompts × 4 frontier generators × 3 tested judges + 1 anchor judge = **832 real judgments**.
 
-![bias heatmap](leaderboard/v0.1/bias_heatmap.png)
+![bias heatmap](leaderboard/v0.2/bias_heatmap.png)
 
-**Key findings**:
+**Three key findings**:
 
-- 🔴 **DeepSeek-chat-judge is the strictest** — systematically rates every Chinese generator 0.07 to 0.17 points below silver-consensus gold
-- 🔵 **GLM-4-plus and Qwen-max judges run slightly lenient** (+0.03 to +0.11 across the board)
-- 🤝 **Per-pair bias is smaller than the literature implies for English** — peak magnitude ±0.17 vs. typically ±0.5+ for cross-family English judge pairs
-- 🪞 **Self-preference is almost absent** — judges score their own family at +0.01 to +0.07 above other Chinese families, well below the >+0.3 typically reported in English benchmarks
-- 📊 **Rank correlations are very high** (0.80–0.95) — Chinese judges agree about *which* model is better, even when their absolute scores drift
+- 💥 **DeepSeek-chat-judge shows strong self-preference**: rates DeepSeek-chat generator **+0.37** above the Kimi anchor while rating every other generator **-0.08 to -0.22** below it. Self-preference lift = **+0.53**, the first quantitative evidence of self-preference among Chinese frontier judges.
+- 🤝 **Qwen-max-judge and GLM-4-plus-judge show no self-preference** — qwen-judge actually rates itself slightly *below* others (-0.02). This diverges sharply from English-judge literature (GPT-4 / Claude consistently exhibit self-preference) and suggests Chinese RLHF preferences differ.
+- 📐 **Tested judges run systematically more lenient than the Kimi anchor** on DeepSeek-chat (sum +0.75) but stricter on GLM-4-plus (sum -0.33). Anchor judges from outside the tested family are *not* interchangeable.
 
-**Honest negative result**: at n=40, per-pair offset calibration does **not** improve held-out MAE (5-fold CV: 0.171 → 0.183). The dominant effect is **judge-level overall offset**, not per-pair. We recommend either (a) running calibration only on the overall offset, (b) adding cross-lingual judges (GPT-4o / Claude) where larger per-pair gaps are expected, or (c) growing the prompt set to 200+. See [experiments/EXPERIMENTS.md](experiments/EXPERIMENTS.md) for the full EXP-001 write-up.
+**Methodological contribution**. v0.1 used silver-consensus gold (3 tested judges' mean) and found per-pair bias was tiny. We discovered this was a [**circular-reasoning bug**](experiments/EXPERIMENTS.md): when gold is the mean of the judges being measured, bias mechanically sums to zero across judges. v0.2 fixes this with an independent anchor judge (Kimi, in neither the tested generator nor judge family) — bias magnitude roughly doubles and per-pair patterns finally emerge.
 
-Full results: [`leaderboard/v0.1/results.json`](leaderboard/v0.1/results.json), [`leaderboard/v0.1/calibrator.json`](leaderboard/v0.1/calibrator.json).
+Full v0.2 results: [`leaderboard/v0.2/results.json`](leaderboard/v0.2/results.json), [`calibrator.json`](leaderboard/v0.2/calibrator.json), [bias heatmap](leaderboard/v0.2/bias_heatmap.png). The v0.1 (flawed) baseline is preserved at [`leaderboard/v0.1/`](leaderboard/v0.1/) for comparison.
 
 ## Install
 
@@ -45,33 +43,31 @@ cd zhpan && pip install -e .
 ```python
 from zhpan import Calibrator
 
-cal = Calibrator.from_file("leaderboard/v0.1/calibrator.json")
-fair = cal.correct(judge="deepseek-chat-judge", generator="doubao-pro-32k", raw_score=3.0)
-# → 3.17  (DeepSeek-judge is systematically harsh on doubao, +0.17 corrected)
+cal = Calibrator.from_file("leaderboard/v0.2/calibrator.json")
+fair = cal.correct(judge="deepseek-chat-judge", generator="deepseek-chat", raw_score=8.0)
+# → 7.63  (DeepSeek-judge favours DeepSeek-gen by +0.37, corrected away)
 ```
 
 Or from the command line:
 
 ```bash
-zhpan debias --judge deepseek-chat-judge --gen doubao-pro-32k --score 3.0
-# raw=3.00  →  calibrated=3.17  (offset=-0.167, judge=deepseek-chat-judge, gen=doubao-pro-32k)
+zhpan debias --judge deepseek-chat-judge --gen deepseek-chat --score 8.0 \
+             --calibrator leaderboard/v0.2/calibrator.json
 ```
 
 ## Try it offline in 30 seconds (no API keys)
 
 ```bash
 make install
-make demo          # full mock pipeline, ~1s
-zhpan debias --judge mock-judge-qwen --gen mock-deepseek --score 2.0 \
-             --calibrator leaderboard/demo/calibrator.json
+make demo
 ```
 
 ## Run the full benchmark on real APIs
 
 ```bash
-cp .env.example .env       # then fill in your 4 API keys
+cp .env.example .env       # then fill in 5 API keys (4 vendors + Kimi anchor)
 make build-prompts
-make benchmark             # generate + judge + analyze, ~¥10 total
+make benchmark             # generate + judge + analyze, ~¥24 total
 ```
 
 Supported vendors:
@@ -79,45 +75,51 @@ Supported vendors:
 - **deepseek** — DeepSeek
 - **zhipu** — 智谱 GLM-4
 - **doubao** — 字节豆包 (Volcengine Ark)
-- **openai** / **anthropic** / **together** — cross-lingual control
+- **moonshot** — Kimi (used as independent anchor judge)
+- **openai** / **anthropic** / **together** — cross-lingual control (optional)
 
-## How it works
+## How it works (v0.2)
 
-1. **Generate.** 40 Chinese prompts × N generators → response set.
-2. **Judge.** M judges × all responses on a 1–5 Chinese rubric, temperature 0.
-3. **Silver gold.** When ≥2 judges agree (std ≤ 1.0), their average is silver ground-truth.
-4. **Bias matrix.** `bias[j][g] = mean(judge_score - silver_gold)` per (judge, generator) pair.
-5. **Calibrate.** `Calibrator.correct()` subtracts the learned per-pair offset, clipped to [1, 5]. 5-fold prompt-axis CV reports held-out MAE.
+1. **Generate.** 52 hard Chinese prompts × N generators → response set.
+2. **Judge.** M tested judges + **1 independent anchor judge** score every response on a 1-10 scale with a 7-dimension breakdown (D1 correctness / D2 reasoning / D3 completeness / D4 on-topic-ness / D5 clarity / D6 depth / D7 safety).
+3. **Anchor gold.** The anchor judge's score is treated as ground-truth. The anchor must be in **neither** the tested generator family nor the tested judge family. This avoids the silver-consensus circular-reasoning bug.
+4. **Bias matrix.** `bias[j][g] = mean(judge_j_score - anchor_score)` per (judge, generator) pair.
+5. **Calibrate.** `Calibrator.correct()` subtracts the learned per-pair offset, clipped to [1, 10]. 5-fold prompt-axis CV reports held-out MAE.
+
+## Why the methodology change
+
+See [experiments/EXPERIMENTS.md](experiments/EXPERIMENTS.md) for the full EXP-001 → EXP-002 narrative, including the diagnostic that uncovered three compounding bugs in v0.1:
+
+1. **Circular silver gold**: Bias against the mean of the same judges mathematically sums to zero across judges.
+2. **Ceiling effect on 1-5 rubric**: 81% of v0.1 judgments were the max score 5; the 1-5 scale degenerated to 4-vs-5.
+3. **Prompts too easy**: v0.1's 40 curated prompts (e.g. "explain why the sky is blue") let frontier models max out the rubric.
+
+v0.2 fixes all three: anchor judge + 1-10 rubric + 52 hard prompts.
 
 ## Project layout
 
 ```
 zhpan/
-├── src/zhpan/         # main package — pip-install target
-│   ├── calibrate.py   # Calibrator class
-│   ├── compute_bias.py
-│   ├── generate.py    # async generation pipeline
-│   ├── judge.py       # Chinese rubric LLM judge
-│   ├── models.py      # vendor adapters
-│   └── cli.py         # `zhpan ...` CLI entry
-├── configs/           # v0.1.yaml (real) + demo.yaml (mock)
-├── data/prompts/      # 40-item curated Chinese set
-├── experiments/       # EXP-XXX run log (EXP-001 = v0.1 baseline)
-├── leaderboard/       # released calibrators + heatmaps
-└── docs/              # methodology + roadmap
+├── src/zhpan/         # main package
+│   ├── calibrate.py
+│   ├── compute_bias.py    # build_gold_anchor() | build_gold_silver() (DEPRECATED)
+│   ├── generate.py
+│   ├── judge.py           # 1-10 + 7-dim rubric (v0.2)
+│   ├── models.py          # 5 Chinese vendors + 3 cross-lingual + mock
+│   └── cli.py
+├── configs/           # v0.2.yaml (real) + demo.yaml (mock)
+├── data/prompts/      # 52 curated hard Chinese prompts
+├── experiments/       # EXP-001 (v0.1) + EXP-002 (v0.2) log
+└── leaderboard/       # v0.1/ (flawed baseline) + v0.2/ (current)
 ```
 
 ## Roadmap
 
-See [docs/ROADMAP.md](docs/ROADMAP.md). v0.2 priorities driven by EXP-001 findings:
-- Add cross-lingual judges (GPT-4o / Claude) — per-pair bias should be larger
-- Expand prompt set to 200+ via C-Eval / CMMLU / AlignBench
-- Add per-category bias breakdown (safety / coding / math may differ)
-- Ship pre-built calibrators in the pip package
-
-## Citation
-
-Coming with v0.1 PyPI release.
+See [docs/ROADMAP.md](docs/ROADMAP.md). v0.3 priorities driven by EXP-002:
+- Add second anchor (e.g. GPT-4o) for anchor-robustness check
+- Per-category bias breakdown (reasoning vs writing may diverge)
+- Pairwise judging (A vs B) to further dampen ceiling effects
+- Per-pair *linear* calibration (not just offset) — tested when n ≥ 200
 
 ## License
 

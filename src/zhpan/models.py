@@ -43,6 +43,11 @@ _COST_PER_M_TOK = {
     "glm-4": {"in": 1.40, "out": 1.40},
     "doubao-pro-32k": {"in": 0.11, "out": 0.28},
     "doubao-lite-32k": {"in": 0.04, "out": 0.08},
+    # Moonshot Kimi (used as anchor judge)
+    "moonshot-v1-8k": {"in": 1.65, "out": 1.65},
+    "moonshot-v1-32k": {"in": 3.30, "out": 3.30},
+    "moonshot-v1-128k": {"in": 8.30, "out": 8.30},
+    "kimi-latest": {"in": 0.275, "out": 1.65},
     # Cross-lingual control
     "gpt-4o": {"in": 2.5, "out": 10.0},
     "gpt-4o-mini": {"in": 0.15, "out": 0.6},
@@ -232,6 +237,13 @@ class DoubaoClient(_OpenAICompatibleClient):
     api_key_env = "ARK_API_KEY"
 
 
+class MoonshotClient(_OpenAICompatibleClient):
+    """Moonshot Kimi — used as independent anchor judge in zhpan v0.2+."""
+
+    base_url = "https://api.moonshot.cn/v1"
+    api_key_env = "MOONSHOT_API_KEY"
+
+
 class TogetherClient(_OpenAICompatibleClient):
     base_url = "https://api.together.xyz/v1"
     api_key_env = "TOGETHER_API_KEY"
@@ -399,6 +411,7 @@ _REGISTRY: dict[str, type[BaseClient]] = {
     "deepseek": DeepSeekClient,
     "zhipu": ZhipuClient,
     "doubao": DoubaoClient,
+    "moonshot": MoonshotClient,
     "openai": OpenAIClient,
     "anthropic": AnthropicClient,
     "together": TogetherClient,

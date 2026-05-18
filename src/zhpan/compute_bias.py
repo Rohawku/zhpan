@@ -49,9 +49,14 @@ def build_gold_silver(
     min_n_judges: int = 2,
     max_std: float = 1.0,
 ) -> dict[str, float]:
-    """Strong-consensus silver gold:
-    For each generation_id, average judge scores when at least `min_n_judges`
-    judges scored it and their std <= max_std. Returns {generation_id: gold_score}.
+    """Strong-consensus silver gold (DEPRECATED in v0.2 for bias measurement).
+
+    ⚠️  Using silver consensus as gold for bias measurement is **mathematically
+    circular**: the bias of each judge against the mean of the same judges is
+    constrained to sum to zero across judges. Use `build_gold_anchor()` instead.
+
+    Kept for backwards-compat with v0.1 results and for CV evaluation where
+    self-consistent gold is acceptable.
     """
     by_gen: dict[str, list[int]] = defaultdict(list)
     for j in judgments:
@@ -69,12 +74,47 @@ def build_gold_silver(
     return gold
 
 
+def build_gold_anchor(
+    judgments: list[dict],
+    anchor_judge: str,
+) -> dict[str, float]:
+    """Anchor gold: use a single independent judge as ground truth.
+
+    The anchor judge MUST NOT also appear in the set of judges whose bias is
+    being measured — that's the whole point. Returns {generation_id: gold_score}.
+
+    This breaks the circular-reasoning bug in silver consensus gold: bias[j][g]
+    no longer mechanically sums to zero across judges, because the anchor sits
+    outside the tested judge set.
+    """
+    gold: dict[str, float] = {}
+    for j in judgments:
+        if j.get("judge") != anchor_judge:
+            continue
+        if j.get("score") is None:
+            continue
+        gold[j["generation_id"]] = float(j["score"])
+    if not gold:
+        raise ValueError(
+            f"No judgments found from anchor judge '{anchor_judge}'. "
+            "Check your config has the anchor judge running and it's not in the "
+            "tested judge set."
+        )
+    return gold
+
+
 def compute_bias(
     judgments: list[dict],
     gold: dict[str, float],
+    exclude_judges: set[str] | None = None,
 ) -> BiasMatrix:
-    """Compute per-(judge × generator) mean and std bias against a gold dict."""
-    judges = sorted({j["judge"] for j in judgments})
+    """Compute per-(judge × generator) mean and std bias against a gold dict.
+
+    `exclude_judges` lets you drop the anchor judge from the output matrix
+    (it would otherwise have bias 0 by construction).
+    """
+    exclude = exclude_judges or set()
+    judges = sorted({j["judge"] for j in judgments if j["judge"] not in exclude})
     generators = sorted({j["generator"] for j in judgments})
 
     diffs: dict[str, dict[str, list[float]]] = {
@@ -82,6 +122,8 @@ def compute_bias(
     }
     for j in judgments:
         if j.get("score") is None:
+            continue
+        if j["judge"] in exclude:
             continue
         if j["generation_id"] not in gold:
             continue
@@ -125,9 +167,12 @@ def _per_judge_rank_corr(
     judge_avg: dict[str, dict[str, list[int]]] = {
         jn: {gn: [] for gn in generators} for jn in judges
     }
+    judges_set = set(judges)
     gold_avg: dict[str, list[float]] = {gn: [] for gn in generators}
     for j in judgments:
         if j.get("score") is None:
+            continue
+        if j["judge"] not in judges_set:
             continue
         if j["generation_id"] not in gold:
             continue

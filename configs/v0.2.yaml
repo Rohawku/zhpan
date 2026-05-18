@@ -1,0 +1,84 @@
+version: v0.2
+
+prompts:
+  path: data/prompts/v0.2.jsonl
+
+# ─── 中文 frontier generators ──────────────────────────────
+generators:
+  - name: qwen-max
+    vendor: dashscope
+    model: qwen-max-2025-01-25
+    params:
+      temperature: 0.7
+      max_tokens: 1536
+
+  - name: deepseek-chat
+    vendor: deepseek
+    model: deepseek-chat
+    params:
+      temperature: 0.7
+      max_tokens: 1536
+
+  - name: glm-4-plus
+    vendor: zhipu
+    model: glm-4-plus
+    params:
+      temperature: 0.7
+      max_tokens: 1536
+
+  - name: doubao-pro-32k
+    vendor: doubao
+    model: doubao-1-5-pro-32k-250115
+    params:
+      temperature: 0.7
+      max_tokens: 1536
+
+# ─── Tested judges (same 3 families as v0.1) ───────────────
+judges:
+  - name: qwen-max-judge
+    vendor: dashscope
+    model: qwen-max-2025-01-25
+    params:
+      temperature: 0.0
+      max_tokens: 400
+
+  - name: deepseek-chat-judge
+    vendor: deepseek
+    model: deepseek-chat
+    params:
+      temperature: 0.0
+      max_tokens: 400
+
+  - name: glm-4-plus-judge
+    vendor: zhipu
+    model: glm-4-plus
+    params:
+      temperature: 0.0
+      max_tokens: 400
+
+  # ─── Independent anchor judge (NOT in tested judge family) ──
+  - name: kimi-anchor-judge
+    vendor: moonshot
+    model: moonshot-v1-32k
+    params:
+      temperature: 0.0
+      max_tokens: 400
+
+# anchor_judge declares which judge above serves as independent gold.
+# The anchor's bias against itself is undefined and excluded from the bias matrix.
+anchor_judge: kimi-anchor-judge
+
+generation:
+  output_dir: data/generations/v0.2
+  concurrency: 5
+  cache: true
+
+judging:
+  output_dir: data/judgments/v0.2
+  concurrency: 5
+  cache: true
+
+cache_root: data/cache
+
+budget:
+  max_usd: 30

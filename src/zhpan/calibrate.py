@@ -55,8 +55,8 @@ class Calibrator:
         if np.isnan(offset):
             offset = 0.0
         out = raw_score - offset
-        # Clip to scale 1-5
-        return float(max(1.0, min(5.0, out)))
+        # Clip to scale 1-10 (v0.2) or 1-5 (v0.1, still fits in 1-10)
+        return float(max(1.0, min(10.0, out)))
 
     def save(self, path: str | Path) -> None:
         path = Path(path)
@@ -106,12 +106,27 @@ def load(version: str = "v0.1") -> Calibrator:
     )
 
 
-def fit_from_judgments(judgments: list[dict]) -> tuple[Calibrator, BiasMatrix]:
-    """Fit a v0.1 calibrator from raw judgments using silver-consensus gold."""
-    gold = build_gold_silver(judgments)
-    if not gold:
-        raise ValueError("No silver-consensus gold could be constructed from judgments.")
-    bm = compute_bias(judgments, gold)
+def fit_from_judgments(
+    judgments: list[dict],
+    anchor_judge: str | None = None,
+) -> tuple[Calibrator, BiasMatrix]:
+    """Fit a calibrator from raw judgments.
+
+    If `anchor_judge` is set, use that judge's scores as independent gold
+    (the v0.2 approach that breaks the circular silver-consensus bug).
+    Otherwise fall back to silver consensus (v0.1 behaviour).
+    """
+    from .compute_bias import build_gold_anchor
+
+    exclude: set[str] = set()
+    if anchor_judge:
+        gold = build_gold_anchor(judgments, anchor_judge=anchor_judge)
+        exclude = {anchor_judge}
+    else:
+        gold = build_gold_silver(judgments)
+        if not gold:
+            raise ValueError("No silver-consensus gold could be constructed from judgments.")
+    bm = compute_bias(judgments, gold, exclude_judges=exclude)
     cal = Calibrator.from_bias_matrix(bm)
     return cal, bm
 
@@ -120,9 +135,14 @@ def cv_eval(
     judgments: list[dict],
     n_folds: int = 5,
     seed: int = 42,
+    anchor_judge: str | None = None,
 ) -> dict[str, Any]:
-    """5-fold CV on the prompt axis. Returns held-out MAE before/after calibration."""
+    """5-fold CV on the prompt axis. Held-out MAE before/after calibration.
+
+    Uses the same anchor-or-silver gold construction as `fit_from_judgments`.
+    """
     import random
+    from .compute_bias import build_gold_anchor
 
     rng = random.Random(seed)
     prompt_ids = sorted({j["prompt_id"] for j in judgments})
@@ -131,21 +151,33 @@ def cv_eval(
     for i, pid in enumerate(prompt_ids):
         folds[i % n_folds].append(pid)
 
+    def _gold(rows):
+        return (
+            build_gold_anchor(rows, anchor_judge=anchor_judge)
+            if anchor_judge
+            else build_gold_silver(rows)
+        )
+
     fold_results: list[dict[str, float]] = []
     for k in range(n_folds):
         held_out = set(folds[k])
         train = [j for j in judgments if j["prompt_id"] not in held_out]
         test = [j for j in judgments if j["prompt_id"] in held_out]
         try:
-            cal, _ = fit_from_judgments(train)
+            cal, _ = fit_from_judgments(train, anchor_judge=anchor_judge)
         except ValueError:
             continue
-        test_gold = build_gold_silver(test)
+        try:
+            test_gold = _gold(test)
+        except ValueError:
+            continue
         if not test_gold:
             continue
         before, after = [], []
         for j in test:
             if j.get("score") is None or j["generation_id"] not in test_gold:
+                continue
+            if anchor_judge and j["judge"] == anchor_judge:
                 continue
             g = test_gold[j["generation_id"]]
             before.append(abs(float(j["score"]) - g))

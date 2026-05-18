@@ -48,9 +48,12 @@ def main(in_path: str, out_path: str) -> None:
             color = "white" if abs(v) > vmax * 0.55 else "black"
             ax.text(j, i, f"{v:+.2f}", ha="center", va="center", color=color, fontsize=11)
 
-    ax.set_title(f"zhpan v0.1 — per-(judge × generator) mean bias\n(judge score − silver-consensus gold, n={data['n_judgments']} judgments)")
+    ax.set_title(
+        f"zhpan {data.get('version', '')} — per-(judge × generator) mean bias\n"
+        f"(judge score − {'anchor judge ' + repr(data['anchor_judge']) if data.get('anchor_judge') else 'silver-consensus gold'}, n={data['n_judgments']} judgments)"
+    )
     cbar = plt.colorbar(im, ax=ax, shrink=0.7)
-    cbar.set_label("mean bias (score points, 1-5 scale)")
+    cbar.set_label("mean bias (score points)")
     fig.tight_layout()
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, bbox_inches="tight")
